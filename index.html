@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pod — Plan Anything, With Anyone</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --pod-orange: #FF4F00;
+      --pod-orange-light: #FF6B26;
+      --pod-orange-glow: rgba(255, 79, 0, 0.18);
+      --pod-dark: #0A0A0B;
+      --pod-dark-2: #111114;
+      --pod-dark-3: #18181C;
+      --pod-border: rgba(255,255,255,0.07);
+      --pod-text: #F0EDE8;
+      --pod-muted: rgba(240, 237, 232, 0.45);
+      --pod-muted-2: rgba(240, 237, 232, 0.2);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--pod-dark);
+      color: var(--pod-text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── PAGE ROUTER ─── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10,10,11,0.7);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--pod-border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .nav-logo-mark {
+      width: 34px;
+      height: 34px;
+    }
+
+    .nav-logo-text {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--pod-text);
+      letter-spacing: -0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--pod-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+
+    .nav-links a:hover { color: var(--pod-text); }
+
+    .nav-cta {
+      background: var(--pod-orange) !important;
+      color: white !important;
+      padding: 9px 20px;
+      border-radius: 8px;
+      font-weight: 600 !important;
+      font-size: 14px !important;
+      transition: opacity 0.2s, transform 0.2s !important;
+    }
+
+    .nav-cta:hover { opacity: 0.88 !important; transform: translateY(-1px); }
+
+    /* ─── HERO ─── */
+    #landing {
+      min-height: 100vh;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 24px 80px;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    /* Radial glow */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 600px;
+      background: radial-gradient(ellipse at center, rgba(255,79,0,0.14) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Grid texture */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,79,0,0.1);
+      border: 1px solid rgba(255,79,0,0.3);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #FF7A3D;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--pod-orange);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero-headline {
+      font-size: clamp(52px, 9vw, 108px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.6s ease 0.1s both;
+    }
+
+    .hero-headline .orange { color: var(--pod-orange); }
+
+    .hero-sub {
+      margin-top: 28px;
+      font-size: clamp(16px, 2vw, 20px);
+      font-weight: 400;
+      color: var(--pod-muted);
+      max-width: 480px;
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.6s ease 0.2s both;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 44px;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.6s ease 0.3s both;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--pod-orange);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 40px rgba(255,79,0,0.35), 0 4px 16px rgba(255,79,0,0.25);
+      cursor: pointer;
+      border: none;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 60px rgba(255,79,0,0.45), 0 8px 24px rgba(255,79,0,0.3);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--pod-text);
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid var(--pod-border);
+      transition: border-color 0.2s, background 0.2s;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* ─── PHONE MOCKUP ─── */
+    .phone-section {
+      padding: 40px 24px 120px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+
+    .phone-wrap {
+      position: relative;
+      animation: floatPhone 4s ease-in-out infinite;
+    }
+
+    @keyframes floatPhone {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .phone-glow {
+      position: absolute;
+      bottom: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 120px;
+      background: radial-gradient(ellipse, rgba(255,79,0,0.25) 0%, transparent 70%);
+      filter: blur(20px);
+    }
+
+    .phone-frame {
+      width: 280px;
+      background: var(--pod-dark-3);
+      border-radius: 44px;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      box-shadow:
+        0 80px 120px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(255,255,255,0.04),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+      position: relative;
+    }
+
+    .phone-notch {
+      background: #0A0A0B;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .phone-notch-bar {
+      width: 100px;
+      height: 6px;
+      background: #222;
+      border-radius: 3px;
+    }
+
+    .phone-screen {
+      background: linear-gradient(160deg, #0f1118 0%, #0d1015 100%);
+      padding: 16px;
+      min-height: 480px;
+    }
+
+    /* Mini map */
+    .mini-map {
+      background: #141820;
+      border-radius: 16px;
+      height: 220px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .map-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    .map-road-h {
+      position: absolute;
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+    }
+
+    .map-road-v {
+      position: absolute;
+      width: 3px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+    }
+
+    /* Avatar pins */
+    .map-pin {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .map-pin-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--pod-orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      background: var(--pod-dark-3);
+      box-shadow: 0 0 12px rgba(255,79,0,0.5);
+      animation: pinPulse 2.5s ease-in-out infinite;
+    }
+
+    .map-pin-avatar.blue { border-color: #4A9EFF; box-shadow: 0 0 12px rgba(74,158,255,0.5); }
+    .map-pin-avatar.green { border-color: #3DD68C; box-shadow: 0 0 12px rgba(61,214,140,0.5); animation-delay: 0.8s; }
+    .map-pin-avatar.purple { border-color: #A78BFA; box-shadow: 0 0 12px rgba(167,139,250,0.5); animation-delay: 1.5s; }
+
+    @keyframes pinPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .map-pin-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--pod-orange);
+    }
+
+    .map-pin.blue .map-pin-dot { background: #4A9EFF; }
+    .map-pin.green .map-pin-dot { background: #3DD68C; }
+    .map-pin.purple .map-pin-dot { background: #A78BFA; }
+
+    /* destination marker */
+    .map-dest {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .map-dest-ring {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px dashed rgba(255,79,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: spin 8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .map-dest-inner {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,79,0,0.2);
+      border: 2px solid var(--pod-orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      animation: spinReverse 8s linear infinite;
+    }
+
+    @keyframes spinReverse { to { transform: rotate(-360deg); } }
+
+    /* Trip card */
+    .trip-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+
+    .trip-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .trip-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--pod-text);
+    }
+
+    .trip-card-badge {
+      font-size: 10px;
+      font-weight: 600;
+      color: #3DD68C;
+      background: rgba(61,214,140,0.12);
+      border: 1px solid rgba(61,214,140,0.25);
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+
+    .trip-card-meta {
+      font-size: 11px;
+      color: var(--pod-muted);
+      margin-bottom: 10px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .trip-card-avatars {
+      display: flex;
+      gap: -4px;
+    }
+
+    .mini-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid var(--pod-dark-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      margin-left: -6px;
+    }
+
+    .mini-avatar:first-child { margin-left: 0; }
+
+    /* RSVP dots */
+    .rsvp-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .rsvp-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #3DD68C;
+    }
+
+    .rsvp-dot.pending { background: rgba(255,255,255,0.2); }
+
+    /* ─── FEATURES ─── */
+    .features {
+      padding: 100px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--pod-orange);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+
+    .section-desc {
+      font-size: 17px;
+      color: var(--pod-muted);
+      max-width: 480px;
+      line-height: 1.65;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 60px;
+    }
+
+    .feature-card {
+      background: var(--pod-dark-2);
+      border: 1px solid var(--pod-border);
+      border-radius: 20px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(255,79,0,0.25);
+      transform: translateY(-3px);
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,79,0,0.4), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(255,79,0,0.1);
+      border: 1px solid rgba(255,79,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .feature-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--pod-muted);
+      line-height: 1.65;
+    }
+
+    /* ─── HOW IT WORKS ─── */
+    .how-it-works {
+      padding: 100px 24px;
+      background: var(--pod-dark-2);
+      border-top: 1px solid var(--pod-border);
+      border-bottom: 1px solid var(--pod-border);
+    }
+
+    .how-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0;
+      margin-top: 60px;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 32px;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--pod-border), var(--pod-border), transparent);
+    }
+
+    .step {
+      text-align: center;
+      padding: 0 24px;
+      position: relative;
+    }
+
+    .step-num {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--pod-dark-3);
+      border: 1px solid var(--pod-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin: 0 auto 24px;
+      position: relative;
+      z-index: 1;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .step:hover .step-num {
+      border-color: rgba(255,79,0,0.5);
+      box-shadow: 0 0 24px rgba(255,79,0,0.2);
+    }
+
+    .step-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .step-desc {
+      font-size: 14px;
+      color: var(--pod-muted);
+      line-height: 1.6;
+    }
+
+    /* ─── BETA SECTION ─── */
+    .beta-section {
+      padding: 120px 24px;
+      max-width: 760px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .beta-card {
+      background: var(--pod-dark-2);
+      border: 1px solid var(--pod-border);
+      border-radius: 28px;
+      padding: 60px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .beta-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,79,0,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .beta-headline {
+      font-size: clamp(30px, 4vw, 46px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .beta-sub {
+      font-size: 16px;
+      color: var(--pod-muted);
+      line-height: 1.65;
+      margin-bottom: 36px;
+      position: relative;
+    }
+
+    .email-form {
+      display: flex;
+      gap: 10px;
+      max-width: 420px;
+      margin: 0 auto 20px;
+      position: relative;
+    }
+
+    .email-input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--pod-border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-size: 15px;
+      color: var(--pod-text);
+      font-family: 'Outfit', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .email-input::placeholder { color: var(--pod-muted-2); }
+    .email-input:focus { border-color: rgba(255,79,0,0.4); }
+
+    .beta-note {
+      font-size: 12px;
+      color: var(--pod-muted-2);
+      font-family: 'DM Mono', monospace;
+      position: relative;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--pod-border);
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--pod-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--pod-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+
+    .footer-links a:hover { color: var(--pod-text); }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── PRIVACY PAGE ─── */
+    #privacy {
+      padding-top: 100px;
+      min-height: 100vh;
+    }
+
+    .privacy-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 60px 24px 120px;
+    }
+
+    .privacy-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--pod-muted);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.2s;
+      margin-bottom: 48px;
+      background: none;
+      border: none;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .privacy-back:hover { color: var(--pod-text); }
+
+    .privacy-title {
+      font-size: 48px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .privacy-app {
+      font-size: 15px;
+      color: var(--pod-orange);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .privacy-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--pod-muted-2);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+    }
+
+    .privacy-divider {
+      height: 1px;
+      background: var(--pod-border);
+      margin-bottom: 48px;
+    }
+
+    .privacy-section {
+      margin-bottom: 48px;
+    }
+
+    .privacy-section h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .privacy-section h2 .sec-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--pod-orange);
+      background: rgba(255,79,0,0.1);
+      border: 1px solid rgba(255,79,0,0.2);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .privacy-section p {
+      font-size: 15px;
+      color: var(--pod-muted);
+      line-height: 1.8;
+    }
+
+    .privacy-data-item {
+      display: flex;
+      gap: 16px;
+      padding: 20px;
+      background: var(--pod-dark-2);
+      border: 1px solid var(--pod-border);
+      border-radius: 14px;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+
+    .privacy-data-item:hover { border-color: rgba(255,79,0,0.15); }
+
+    .privacy-data-accent {
+      width: 3px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .privacy-data-item h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .privacy-data-item p {
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .privacy-contact {
+      background: var(--pod-dark-2);
+      border: 1px solid var(--pod-border);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    .privacy-contact p {
+      font-size: 14px;
+      color: var(--pod-muted);
+      margin-bottom: 10px;
+    }
+
+    .privacy-contact a {
+      color: var(--pod-orange);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    .privacy-contact a:hover { text-decoration: underline; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 640px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .features, .how-it-works .how-inner { padding-left: 20px; padding-right: 20px; }
+      .beta-card { padding: 40px 24px; }
+      footer { padding: 32px 20px; flex-direction: column; align-items: flex-start; }
+      .steps::before { display: none; }
+      .email-form { flex-direction: column; }
+    }
+
+    /* Success state */
+    .success-msg {
+      display: none;
+      color: #3DD68C;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+    .success-msg.show { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo" onclick="showPage('landing')">
+      <svg class="nav-logo-mark" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="17" cy="17" r="17" fill="#FF4F00"/>
+        <!-- Whale 1 (top, swimming right) -->
+        <path d="M17 8 C20 8, 25 10, 26 13 C27 15, 25.5 16.5, 24 16 C22 15.2, 20 16, 17 17 C14 16, 12 15.2, 10 16 C8.5 16.5, 7 15, 8 13 C9 10, 14 8, 17 8 Z" fill="white" opacity="0.95"/>
+        <!-- Tail flukes whale 1 -->
+        <path d="M26 13 C28 11, 29 9, 28 8 C27.5 10, 26.5 11.5, 26 13 Z" fill="white" opacity="0.95"/>
+        <path d="M26 13 C28.5 13, 30 11.5, 30 10 C28 11, 27 12, 26 13 Z" fill="white" opacity="0.7"/>
+        <!-- Eye whale 1 -->
+        <circle cx="10.5" cy="12.5" r="1" fill="#FF4F00"/>
+        <!-- Whale 2 (bottom, swimming left, mirrored) -->
+        <path d="M17 26 C14 26, 9 24, 8 21 C7 19, 8.5 17.5, 10 18 C12 18.8, 14 18, 17 17 C20 18, 22 18.8, 24 18 C25.5 17.5, 27 19, 26 21 C25 24, 20 26, 17 26 Z" fill="white" opacity="0.95"/>
+        <!-- Tail flukes whale 2 -->
+        <path d="M8 21 C6 23, 5 25, 6 26 C6.5 24, 7.5 22.5, 8 21 Z" fill="white" opacity="0.95"/>
+        <path d="M8 21 C5.5 21, 4 22.5, 4 24 C6 23, 7 22, 8 21 Z" fill="white" opacity="0.7"/>
+        <!-- Eye whale 2 -->
+        <circle cx="23.5" cy="21.5" r="1" fill="#FF4F00"/>
+      </svg>
+      <span class="nav-logo-text">Pod</span>
+    </div>
+    <ul class="nav-links">
+      <li><a onclick="document.getElementById('features-section').scrollIntoView({behavior:'smooth'})">Features</a></li>
+      <li><a onclick="document.getElementById('how-section').scrollIntoView({behavior:'smooth'})">How it works</a></li>
+      <li><a class="nav-cta" onclick="document.getElementById('beta-section').scrollIntoView({behavior:'smooth'})">Join Beta</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══════════════════════════════════════ LANDING PAGE ══════════════════════════════════════ -->
+  <div id="landing" class="page active">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Now in Beta — TestFlight
+      </div>
+      <h1 class="hero-headline">
+        Plan <span class="orange">anything.</span><br>With anyone.
+      </h1>
+      <p class="hero-sub">
+        Stop drowning in group chats just to figure out where to meet. Pod gets your whole crew on the same map — in real time.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="document.getElementById('beta-section').scrollIntoView({behavior:'smooth'})">
+          🍎 &nbsp;Get Early Access
+        </button>
+        <button class="btn-secondary" onclick="document.getElementById('how-section').scrollIntoView({behavior:'smooth'})">
+          See how it works →
+        </button>
+      </div>
+    </section>
+
+    <!-- PHONE MOCKUP -->
+    <div class="phone-section">
+      <div class="phone-wrap">
+        <div class="phone-glow"></div>
+        <div class="phone-frame">
+          <div class="phone-notch"><div class="phone-notch-bar"></div></div>
+          <div class="phone-screen">
+            <!-- Mini map -->
+            <div class="mini-map">
+              <div class="map-grid"></div>
+              <!-- Roads -->
+              <div class="map-road-h" style="top:35%; left:0; right:0;"></div>
+              <div class="map-road-h" style="top:65%; left:0; right:0;"></div>
+              <div class="map-road-v" style="left:30%; top:0; bottom:0;"></div>
+              <div class="map-road-v" style="left:65%; top:0; bottom:0;"></div>
+              <!-- Destination -->
+              <div class="map-dest">
+                <div class="map-dest-ring">
+                  <div class="map-dest-inner">🍕</div>
+                </div>
+              </div>
+              <!-- Pins -->
+              <div class="map-pin" style="top:20%; left:15%;">
+                <div class="map-pin-avatar">😎</div>
+                <div class="map-pin-dot"></div>
+              </div>
+              <div class="map-pin blue" style="top:55%; left:60%;">
+                <div class="map-pin-avatar blue">🧢</div>
+                <div class="map-pin-dot"></div>
+              </div>
+              <div class="map-pin green" style="top:15%; left:70%;">
+                <div class="map-pin-avatar green">🎧</div>
+                <div class="map-pin-dot"></div>
+              </div>
+              <div class="map-pin purple" style="top:68%; left:20%;">
+                <div class="map-pin-avatar purple">🌸</div>
+                <div class="map-pin-dot"></div>
+              </div>
+            </div>
+            <!-- Trip card -->
+            <div class="trip-card">
+              <div class="trip-card-header">
+                <span class="trip-card-title">🍕 Friday Night Slice</span>
+                <span class="trip-card-badge">Live</span>
+              </div>
+              <div class="trip-card-meta">
+                <span>📍 Tony's Pizza</span>
+                <span>🕗 7:30 PM</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div class="trip-card-avatars">
+                  <div class="mini-avatar" style="background:#FF4F00;">😎</div>
+                  <div class="mini-avatar" style="background:#1A4A8A;">🧢</div>
+                  <div class="mini-avatar" style="background:#1A5C3A;">🎧</div>
+                  <div class="mini-avatar" style="background:#4A1A6A;">🌸</div>
+                </div>
+                <div class="rsvp-row">
+                  <div class="rsvp-dot"></div>
+                  <div class="rsvp-dot"></div>
+                  <div class="rsvp-dot"></div>
+                  <div class="rsvp-dot pending"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <section id="features-section" class="features">
+      <p class="section-label">What you get</p>
+      <h2 class="section-title">Everything your<br>group actually needs</h2>
+      <p class="section-desc">No fluff, no 47-tab spreadsheets. Just the tools that get people from "where should we go?" to actually there.</p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📍</div>
+          <h3 class="feature-title">Live Location Tracking</h3>
+          <p class="feature-desc">See your whole crew on one map in real time — even when the app is in the background. No more "where are you?" texts.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🗺️</div>
+          <h3 class="feature-title">Trip Itineraries</h3>
+          <p class="feature-desc">Plan every stop, add notes, set times. Everyone sees the same plan so nobody shows up at the wrong spot.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">✅</div>
+          <h3 class="feature-title">RSVP in One Tap</h3>
+          <p class="feature-desc">Drop a location, set a time, let everyone say in or out. Instant headcount. No back-and-forth.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔔</div>
+          <h3 class="feature-title">Smart Notifications</h3>
+          <p class="feature-desc">Get notified when someone joins, leaves, or the plan changes — without your phone blowing up all night.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔗</div>
+          <h3 class="feature-title">Instant Invite Links</h3>
+          <p class="feature-desc">Share a code. Anyone joins, sees the plan, and shows up on the map. No sign-up required for guests.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🗂️</div>
+          <h3 class="feature-title">Saved Favorites</h3>
+          <p class="feature-desc">Bookmark your go-to spots so planning your next hangout takes seconds, not another group debate.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how-section" class="how-it-works">
+      <div class="how-inner">
+        <p class="section-label">How it works</p>
+        <h2 class="section-title">Three steps.<br>Zero chaos.</h2>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">🪐</div>
+            <h3 class="step-title">Create a Pod</h3>
+            <p class="step-desc">Open the app, start a new trip, and grab your invite code in seconds.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">📣</div>
+            <h3 class="step-title">Invite your crew</h3>
+            <p class="step-desc">Share the code. Your friends join, appear on the map, and can RSVP immediately.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">🚀</div>
+            <h3 class="step-title">Go. Together.</h3>
+            <p class="step-desc">Track each other live. See who's on the way, who's already there, who's running late — as usual.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BETA CTA -->
+    <div id="beta-section" style="padding: 100px 24px;">
+      <div class="beta-section" style="padding:0; max-width:680px; margin:0 auto;">
+        <div class="beta-card">
+          <div class="hero-badge" style="margin-bottom:28px; display:inline-flex;">
+            <span class="badge-dot"></span>
+            iOS Beta · TestFlight
+          </div>
+          <h2 class="beta-headline">Be in the first pod.</h2>
+          <p class="beta-sub">Pod is live on iOS via TestFlight. Drop your email and I'll send you the link — takes 30 seconds to install and you're in.</p>
+          <div class="email-form">
+            <input class="email-input" type="email" id="email-input" placeholder="your@email.com" />
+            <button class="btn-primary" style="white-space:nowrap; font-size:15px;" onclick="handleSignup()">Get Access</button>
+          </div>
+          <p class="beta-note">iOS only for now · Android coming soon</p>
+          <div class="success-msg" id="success-msg">🎉 You're on the list! Check your inbox soon.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-logo" onclick="showPage('landing')">
+        <svg width="26" height="26" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="17" fill="#FF4F00"/>
+          <path d="M17 8 C20 8, 25 10, 26 13 C27 15, 25.5 16.5, 24 16 C22 15.2, 20 16, 17 17 C14 16, 12 15.2, 10 16 C8.5 16.5, 7 15, 8 13 C9 10, 14 8, 17 8 Z" fill="white" opacity="0.95"/>
+          <path d="M26 13 C28 11, 29 9, 28 8 C27.5 10, 26.5 11.5, 26 13 Z" fill="white" opacity="0.95"/>
+          <path d="M26 13 C28.5 13, 30 11.5, 30 10 C28 11, 27 12, 26 13 Z" fill="white" opacity="0.7"/>
+          <circle cx="10.5" cy="12.5" r="1" fill="#FF4F00"/>
+          <path d="M17 26 C14 26, 9 24, 8 21 C7 19, 8.5 17.5, 10 18 C12 18.8, 14 18, 17 17 C20 18, 22 18.8, 24 18 C25.5 17.5, 27 19, 26 21 C25 24, 20 26, 17 26 Z" fill="white" opacity="0.95"/>
+          <path d="M8 21 C6 23, 5 25, 6 26 C6.5 24, 7.5 22.5, 8 21 Z" fill="white" opacity="0.95"/>
+          <path d="M8 21 C5.5 21, 4 22.5, 4 24 C6 23, 7 22, 8 21 Z" fill="white" opacity="0.7"/>
+          <circle cx="23.5" cy="21.5" r="1" fill="#FF4F00"/>
+        </svg>
+        <span style="font-weight:800; font-size:16px;">Pod</span>
+      </div>
+      <p class="footer-copy">© 2026 Pod (Pakky Trip Planner). All rights reserved.</p>
+      <ul class="footer-links">
+        <li><a onclick="showPage('privacy'); window.scrollTo(0,0)">Privacy Policy</a></li>
+        <li><a href="mailto:minhtran60524@gmail.com">Contact</a></li>
+      </ul>
+    </footer>
+
+  </div><!-- /landing -->
+
+  <!-- ══════════════════════════════════════ PRIVACY PAGE ══════════════════════════════════════ -->
+  <div id="privacy" class="page">
+    <div class="privacy-inner">
+      <button class="privacy-back" onclick="showPage('landing'); window.scrollTo(0,0)">
+        ← Back to Pod
+      </button>
+
+      <p class="privacy-app">Pod (Pakky Trip Planner)</p>
+      <h1 class="privacy-title">Privacy Policy</h1>
+      <p class="privacy-date">Last updated: March 23, 2026</p>
+      <div class="privacy-divider"></div>
+
+      <div class="privacy-section">
+        <h2><span class="sec-num">01</span> Overview</h2>
+        <p>At Pod, we are committed to protecting your privacy. This policy outlines how we handle your data to provide a seamless group trip planning experience. By using the app, you consent to the practices described here.</p>
+      </div>
+
+      <div class="privacy-section">
+        <h2><span class="sec-num">02</span> Data Collection & Usage</h2>
+
+        <div class="privacy-data-item">
+          <div class="privacy-data-accent" style="background:#4A9EFF;"></div>
+          <div>
+            <h3>Precise Location Data</h3>
+            <p>We collect GPS coordinates to enable real-time map features and group tracking. This includes Background Location access, allowing your trip members to see your progress even when the app is minimized.</p>
+          </div>
+        </div>
+
+        <div class="privacy-data-item">
+          <div class="privacy-data-accent" style="background:#3DD68C;"></div>
+          <div>
+            <h3>Account Identifiers</h3>
+            <p>We use Firebase Authentication to collect your email address and name. This is required to sync your itineraries and identify you to your travel group.</p>
+          </div>
+        </div>
+
+        <div class="privacy-data-item">
+          <div class="privacy-data-accent" style="background:#A78BFA;"></div>
+          <div>
+            <h3>User Generated Content</h3>
+            <p>Destinations, notes, and favorite locations you save are stored in our Firebase Realtime Database to ensure all group members have the latest trip details.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="privacy-section">
+        <h2><span class="sec-num">03</span> Data Sharing</h2>
+        <p>Your data is private. We do not sell your personal information. Your precise location and trip updates are only shared with users you have explicitly authorized by joining a shared "Trip." We utilize Google Firebase for secure data infrastructure.</p>
+      </div>
+
+      <div class="privacy-section">
+        <h2><span class="sec-num">04</span> Data Control & Deletion</h2>
+        <p>You maintain full control over your data. You may delete your account and all associated trip data at any time via the in-app settings menu. Upon deletion, your data is permanently removed from our Firebase production servers.</p>
+      </div>
+
+      <div class="privacy-contact">
+        <p>Questions or concerns? Reach out directly:</p>
+        <a href="mailto:minhtran60524@gmail.com">minhtran60524@gmail.com</a>
+        <p style="margin-top:20px; font-size:12px; color: rgba(240,237,232,0.18);">© 2026 Pod (Pakky Trip Planner)</p>
+      </div>
+    </div>
+
+    <footer style="border-top: 1px solid var(--pod-border); padding: 32px 40px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+      <div class="footer-logo" onclick="showPage('landing'); window.scrollTo(0,0)">
+        <svg width="26" height="26" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="17" fill="#FF4F00"/>
+          <path d="M17 8 C20 8, 25 10, 26 13 C27 15, 25.5 16.5, 24 16 C22 15.2, 20 16, 17 17 C14 16, 12 15.2, 10 16 C8.5 16.5, 7 15, 8 13 C9 10, 14 8, 17 8 Z" fill="white" opacity="0.95"/>
+          <path d="M26 13 C28 11, 29 9, 28 8 C27.5 10, 26.5 11.5, 26 13 Z" fill="white" opacity="0.95"/>
+          <circle cx="10.5" cy="12.5" r="1" fill="#FF4F00"/>
+          <path d="M17 26 C14 26, 9 24, 8 21 C7 19, 8.5 17.5, 10 18 C12 18.8, 14 18, 17 17 C20 18, 22 18.8, 24 18 C25.5 17.5, 27 19, 26 21 C25 24, 20 26, 17 26 Z" fill="white" opacity="0.95"/>
+          <path d="M8 21 C6 23, 5 25, 6 26 C6.5 24, 7.5 22.5, 8 21 Z" fill="white" opacity="0.95"/>
+          <circle cx="23.5" cy="21.5" r="1" fill="#FF4F00"/>
+        </svg>
+        <span style="font-weight:800; font-size:16px;">Pod</span>
+      </div>
+      <p class="footer-copy">© 2026 Pod (Pakky Trip Planner)</p>
+      <ul class="footer-links">
+        <li><a onclick="showPage('privacy'); window.scrollTo(0,0)" style="color:var(--pod-orange);">Privacy Policy</a></li>
+        <li><a href="mailto:minhtran60524@gmail.com">Contact</a></li>
+      </ul>
+    </footer>
+  </div><!-- /privacy -->
+
+  <script>
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // URL-based routing
+    function route() {
+      const hash = window.location.hash;
+      if (hash === '#/privacy' || hash === '#privacy') {
+        showPage('privacy');
+        window.scrollTo(0, 0);
+      } else {
+        showPage('landing');
+      }
+    }
+
+    window.addEventListener('hashchange', route);
+    route();
+
+    // Override privacy link to use hash routing
+    function goPrivacy() {
+      window.location.hash = '#/privacy';
+    }
+
+    // Beta signup (placeholder — wire to your backend / ConvertKit / etc.)
+    function handleSignup() {
+      const email = document.getElementById('email-input').value;
+      if (!email || !email.includes('@')) {
+        document.getElementById('email-input').style.borderColor = 'rgba(255,79,0,0.6)';
+        return;
+      }
+      document.getElementById('email-input').style.borderColor = 'rgba(61,214,140,0.5)';
+      document.getElementById('success-msg').classList.add('show');
+      document.getElementById('email-input').value = '';
+      // TODO: POST to your email capture endpoint here
+    }
+
+    // Animate elements on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.feature-card, .step, .beta-card').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(28px)';
+      el.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
