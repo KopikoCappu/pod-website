@@ -1,3 +1,6 @@
+import { render } from '@react-email/render';
+import { BetaInviteEmail } from '../emails/BetaInviteEmail.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -5,6 +8,8 @@ export default async function handler(req, res) {
   if (!email) return res.status(400).json({ error: 'No email' });
 
   try {
+    const html = await render(BetaInviteEmail({ testflightLink: 'YOUR_TESTFLIGHT_LINK', email }));
+
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -12,15 +17,10 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Pod <hello@podplananything.com>',
+        from: 'Minh from Pod <hello@podplananything.com>',
         to: email,
-        subject: "You're in — here's your Pod beta link 🎉",
-        html: `
-          <h2>Welcome to Pod beta!</h2>
-          <p>Thanks for signing up. Here's your TestFlight link:</p>
-          <a href="YOUR_TESTFLIGHT_LINK">Join the Beta →</a>
-          <p>— Minh</p>
-        `
+        subject: "You're in — your Pod beta invite is here 🎉",
+        html,
       })
     });
 
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Email failed' });
     }
 
-    // Notify yourself too
+    // Notify yourself
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
