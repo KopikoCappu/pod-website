@@ -1286,18 +1286,24 @@
             return;
         }
 
-        const res = await fetch('/api/signup', {
+        try {
+            const res = await fetch('/api/signup', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email })
-        });
+            });
 
-        if (res.ok) {
+            if (res.ok) {
             document.getElementById('success-msg').classList.add('show');
             document.getElementById('email-input').value = '';
+            } else {
+            alert('Something went wrong, try again!');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Something went wrong, try again!');
         }
-    }
-
+        }
     // Animate elements on scroll
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => {
