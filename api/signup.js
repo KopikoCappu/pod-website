@@ -39,7 +39,7 @@ const html = `
         via TestFlight — takes about 30 seconds.
       </p>
       
-      <a href="YOUR_TESTFLIGHT_LINK" style="background:#FF4F00;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:16px;display:inline-block;margin-bottom:32px;">
+      <a href="https://testflight.apple.com/join/c3WSSAyW" style="background:#FF4F00;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:16px;display:inline-block;margin-bottom:32px;">
         Join the Beta on TestFlight
       </a>
       
