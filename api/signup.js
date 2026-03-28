@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   if (!email) return res.status(400).json({ error: 'No email' });
 
   try {
-    const html = await render(BetaInviteEmail({ testflightLink: 'YOUR_TESTFLIGHT_LINK', email }));
+    const html = await render(BetaInviteEmail({ testflightLink: 'https://testflight.apple.com/join/c3WSSAyW', email }));
 
     const response = await fetch('https://api.resend.com/emails', {
       method: 'POST',
