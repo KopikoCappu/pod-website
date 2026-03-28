@@ -12,7 +12,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Pod <hello@podplananything.com>',
+        from: 'Pod <onboarding@resend.dev>',
         to: email,
         subject: "You're in — here's your Pod beta link 🎉",
         html: `
