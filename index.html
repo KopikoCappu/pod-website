@@ -964,8 +964,8 @@
     </div>
     <ul class="nav-links">
       <li><a onclick="showPage('about'); window.scrollTo(0,0)">About</a></li>
-      <li><a onclick="document.getElementById('features-section').scrollIntoView({behavior:'smooth'})">Features</a></li>
-      <li><a onclick="document.getElementById('how-section').scrollIntoView({behavior:'smooth'})">How it works</a></li>
+<li><a onclick="showPage('landing'); setTimeout(()=>document.getElementById('features-section').scrollIntoView({behavior:'smooth'}),50)">Features</a></li>
+<li><a onclick="showPage('landing'); setTimeout(()=>document.getElementById('how-section').scrollIntoView({behavior:'smooth'}),50)">How it works</a></li>
       <li><a class="nav-cta" onclick="document.getElementById('beta-section').scrollIntoView({behavior:'smooth'})">Join Beta</a></li>
     </ul>
   </nav>
@@ -1352,10 +1352,10 @@
         <div class="privacy-section">
         <h2><span class="sec-num">01</span> Why I built Pod</h2>
         <p style="margin-bottom:16px;">
-            My friend group is genuinely crap at planning things. I'd try to organize something and I was just as bad, not to mention Elijah getting mad, Jay not reading the chat, Rafe + Luis not even awake yet, Davis across town, and who knows if Ali is even alive.
+            My friend group is genuinely crap at planning things. I'd try to organize something and I was just as bad as them. Not to mention Elijah getting mad, Jay not reading the chat, Rafe + Luis not even awake yet, Davis across town, and who knows if Ali is even alive.
         </p>
         <p style="margin-bottom:16px;">
-            The real problem wasn't that they didn't want to come. It's that the plan lived in a wall of text nobody was going to scroll through. So I thought, what if the plan just looked like a plan? Stops in order, times visible, everyone on the same map.
+            The real problem wasn't that they didn't want to come. It was that the plan lived in a wall of text nobody was going to scroll through. So I thought, what if the plan just looked like a plan? Stops in order, times visible, everyone on the same map.
         </p>
         <p>
             That's Pod. No group chat archaeology. You open the app, you see where everyone is going and when, you RSVP, you show up. That's it.
