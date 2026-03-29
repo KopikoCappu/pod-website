@@ -934,10 +934,6 @@
     }
 
 
-    .nav-logo {
-    position: relative;
-    }
-
     .nav-logo .tooltip {
     position: absolute;
     top: calc(100% + 10px);
@@ -951,10 +947,23 @@
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.2s;
+    transition: opacity 0.2s 0.1s; /* small delay before hiding */
     }
 
-    .nav-logo:hover .tooltip { opacity: 1; }
+    /* Bridge the gap between logo and tooltip so mouse doesn't "leave" */
+    .nav-logo::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 14px; /* covers the gap */
+    }
+
+    .nav-logo:hover .tooltip {
+    opacity: 1;
+    pointer-events: all; /* make it clickable */
+    }
 
     /* ─── RESPONSIVE ─── */
     @media (max-width: 640px) {
@@ -985,7 +994,7 @@
     <div class="nav-logo" onclick="showPage('landing')">
     <img src="podlogo.png" class="nav-logo-mark" style="width:34px;height:34px;object-fit:contain;background:white;border-radius:8px;padding:3px;" />
     <span class="nav-logo-text">Pod</span>
-    <span class="tooltip">🎨 Logo by <a href="https://www.linkedin.com/in/mirah-blanchard/" target="_blank" style="color:var(--pod-orange);text-decoration:none;">Mirah Blanchard</a></span>    </div>
+    <span class="tooltip">Logo by <a href="https://www.linkedin.com/in/mirah-blanchard/" target="_blank" style="color:var(--pod-orange);text-decoration:none;">Mirah Blanchard</a></span>    </div>
     <ul class="nav-links">
       <li><a onclick="showPage('about'); window.scrollTo(0,0)">About</a></li>
 <li><a onclick="showPage('landing'); setTimeout(()=>document.getElementById('features-section').scrollIntoView({behavior:'smooth'}),50)">Features</a></li>
