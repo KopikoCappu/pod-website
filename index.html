@@ -933,6 +933,29 @@
     min-height: 100vh;
     }
 
+
+    .nav-logo {
+    position: relative;
+    }
+
+    .nav-logo .tooltip {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    background: var(--pod-dark-2);
+    border: 1px solid var(--pod-border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--pod-muted);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    }
+
+    .nav-logo:hover .tooltip { opacity: 1; }
+
     /* ─── RESPONSIVE ─── */
     @media (max-width: 640px) {
       nav { padding: 16px 20px; }
@@ -960,8 +983,9 @@
   <!-- NAV -->
   <nav>
     <div class="nav-logo" onclick="showPage('landing')">
-    <img src="podlogo.png" class="nav-logo-mark" style="width:34px;height:34px;object-fit:contain;background:white;border-radius:8px;padding:3px;" />      <span class="nav-logo-text">Pod</span>
-    </div>
+    <img src="podlogo.png" class="nav-logo-mark" style="width:34px;height:34px;object-fit:contain;background:white;border-radius:8px;padding:3px;" />
+    <span class="nav-logo-text">Pod</span>
+    <span class="tooltip">🎨 Logo by <a href="https://www.linkedin.com/in/mirah-blanchard/" target="_blank" style="color:var(--pod-orange);text-decoration:none;">Mirah Blanchard</a></span>    </div>
     <ul class="nav-links">
       <li><a onclick="showPage('about'); window.scrollTo(0,0)">About</a></li>
 <li><a onclick="showPage('landing'); setTimeout(()=>document.getElementById('features-section').scrollIntoView({behavior:'smooth'}),50)">Features</a></li>
