@@ -928,6 +928,11 @@
 
     .privacy-contact a:hover { text-decoration: underline; }
 
+    #about {
+    padding-top: 100px;
+    min-height: 100vh;
+    }
+
     /* ─── RESPONSIVE ─── */
     @media (max-width: 640px) {
       nav { padding: 16px 20px; }
@@ -958,6 +963,7 @@
     <img src="podlogo.png" class="nav-logo-mark" style="width:34px;height:34px;object-fit:contain;background:white;border-radius:8px;padding:3px;" />      <span class="nav-logo-text">Pod</span>
     </div>
     <ul class="nav-links">
+      <li><a onclick="showPage('about'); window.scrollTo(0,0)">About</a></li>
       <li><a onclick="document.getElementById('features-section').scrollIntoView({behavior:'smooth'})">Features</a></li>
       <li><a onclick="document.getElementById('how-section').scrollIntoView({behavior:'smooth'})">How it works</a></li>
       <li><a class="nav-cta" onclick="document.getElementById('beta-section').scrollIntoView({behavior:'smooth'})">Join Beta</a></li>
@@ -1153,8 +1159,9 @@
       <p class="footer-copy">© 2026 Pod. All rights reserved.</p>
       <ul class="footer-links">
         <li><a onclick="showPage('privacy'); window.scrollTo(0,0)">Privacy Policy</a></li>
-        <li><a href="mailto:minhtran60524@gmail.com">Contact</a></li>
-      </ul>
+        <li><a onclick="showPage('about'); window.scrollTo(0,0)">About & Contact</a></li>   
+    
+    </ul>
     </footer>
 
   </div><!-- /landing -->
@@ -1242,13 +1249,14 @@
 
     // URL-based routing
     function route() {
-      const hash = window.location.hash;
-      if (hash === '#/privacy' || hash === '#privacy') {
-        showPage('privacy');
-        window.scrollTo(0, 0);
-      } else {
+    const hash = window.location.hash;
+    if (hash === '#/privacy' || hash === '#privacy') {
+        showPage('privacy'); window.scrollTo(0, 0);
+    } else if (hash === '#/about' || hash === '#about') {
+        showPage('about'); window.scrollTo(0, 0);
+    } else {
         showPage('landing');
-      }
+    }
     }
 
     window.addEventListener('hashchange', route);
@@ -1301,6 +1309,123 @@
       el.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
       observer.observe(el);
     });
+
+
+    
   </script>
-</body>
+
+  <!-- ══════════════════════════════════════ ABOUT PAGE ══════════════════════════════════════ -->
+    <div id="about" class="page">
+        <div class="privacy-inner" style="max-width:780px;">
+
+            <button class="privacy-back" onclick="showPage('landing'); window.scrollTo(0,0)">
+            ← Back to Pod
+            </button>
+
+        <!-- HERO ROW -->
+        <div style="display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap;margin-bottom:56px;">
+        <!-- Photo -->
+        <div style="flex-shrink:0;">
+            <div style="width:180px;height:220px;border-radius:20px;overflow:hidden;border:1px solid var(--pod-border);background:var(--pod-dark-2);position:relative;">
+            <img src="pod-pfp.png" alt="Minh Tran"
+                style="width:100%;height:100%;object-fit:cover;"
+                onerror="this.parentElement.innerHTML='<div style=\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;\'>👤</div>'" />
+            <div style="position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(transparent,rgba(10,10,11,0.8));"></div>
+            </div>
+        </div>
+        <!-- Intro -->
+        <div style="flex:1;min-width:240px;">
+            <p class="privacy-app">The person behind Pod</p>
+            <h1 class="privacy-title" style="font-size:40px;">Minh Tran</h1>
+            <p class="privacy-date">CS Sophomore · University of Florida</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;">
+            <span style="background:rgba(255,79,0,0.1);border:1px solid rgba(255,79,0,0.25);color:#FF7A3D;font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;letter-spacing:0.05em;">ML Research</span>
+            <span style="background:rgba(255,79,0,0.1);border:1px solid rgba(255,79,0,0.25);color:#FF7A3D;font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;letter-spacing:0.05em;">Automation Engineering</span>
+            <span style="background:rgba(255,79,0,0.1);border:1px solid rgba(255,79,0,0.25);color:#FF7A3D;font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;letter-spacing:0.05em;">iOS Dev</span>
+            </div>
+        </div>
+        </div>
+
+        <div class="privacy-divider"></div>
+
+        <!-- WHY I BUILT THIS -->
+        <div class="privacy-section">
+        <h2><span class="sec-num">01</span> Why I built Pod</h2>
+        <p style="margin-bottom:16px;">
+            My friend group is genuinely crap at planning things. I'd try to organize something and I was just as bad, not to mention Elijah getting mad, Jay not reading the chat, Rafe + Luis not even awake yet, Davis across town, and who knows if Ali is even alive.
+        </p>
+        <p style="margin-bottom:16px;">
+            The real problem wasn't that they didn't want to come. It's that the plan lived in a wall of text nobody was going to scroll through. So I thought, what if the plan just looked like a plan? Stops in order, times visible, everyone on the same map.
+        </p>
+        <p>
+            That's Pod. No group chat archaeology. You open the app, you see where everyone is going and when, you RSVP, you show up. That's it.
+        </p>
+        </div>
+
+        <!-- BACKGROUND -->
+        <div class="privacy-section">
+        <h2><span class="sec-num">02</span> Background</h2>
+        <p style="margin-bottom:16px;">
+            I'm a CS sophomore at the University of Florida. Outside of Pod, I do machine learning research and automation in epidemiology, and work on automation engineering at UF.
+        </p>
+        <p>
+            Building Pod taught me more in a few months than I expected — Firebase security rules that silently fail at 2am, animated marker bugs that only show up with 4+ users, background location on iOS being its own beast entirely. The kind of stuff you only learn by shipping something real.
+        </p>
+        </div>
+
+        <!-- GOALS -->
+        <div class="privacy-section">
+        <h2><span class="sec-num">03</span> What I'm looking for</h2>
+        <p style="margin-bottom:16px;">
+            Pod is in beta right now and I'm actively growing it, by the way if you're reading this and want to try it, the signup is on the homepage.
+        </p>
+        <p style="margin-bottom:16px;">
+            I'm also looking for a summer 2026 SWE internship. The dream is somewhere like Anthropic or Google — places where the range of what you can work on is genuinely wide, where people care deeply about what they're building and why, and where you feel that in the culture. That kind of freedom to build things that matter is what I'm after.
+        </p>
+        <p>
+            If that sounds like where you work, I'd love to talk.
+        </p>
+        </div>
+
+        <!-- CONTACT FORM -->
+        <div class="privacy-divider"></div>
+
+        <div class="privacy-section">
+        <h2><span class="sec-num">04</span> Get in touch</h2>
+        <p style="margin-bottom:28px;">Whether you want to talk about Pod, an internship, or anything else — reach out.</p>
+
+        <!-- Links -->
+        <div style="display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap;">
+            <a href="mailto:minhtran60524@gmail.com"
+            style="display:inline-flex;align-items:center;gap:8px;background:var(--pod-dark-2);border:1px solid var(--pod-border);color:var(--pod-text);text-decoration:none;padding:11px 20px;border-radius:10px;font-size:14px;font-weight:600;transition:border-color 0.2s;"
+            onmouseover="this.style.borderColor='rgba(255,79,0,0.3)'"
+            onmouseout="this.style.borderColor='var(--pod-border)'">
+            ✉️ &nbsp;minhtran60524@gmail.com
+            </a>
+            <a href="https://www.linkedin.com/in/minhtran605/" target="_blank"
+            style="display:inline-flex;align-items:center;gap:8px;background:var(--pod-dark-2);border:1px solid var(--pod-border);color:var(--pod-text);text-decoration:none;padding:11px 20px;border-radius:10px;font-size:14px;font-weight:600;transition:border-color 0.2s;"
+            onmouseover="this.style.borderColor='rgba(255,79,0,0.3)'"
+            onmouseout="this.style.borderColor='var(--pod-border)'">
+            💼 &nbsp;LinkedIn
+            </a>
+        </div>
+
+        <!-- Contact form -->
+        </div>
+
+    </div>
+
+    <footer style="border-top:1px solid var(--pod-border);padding:32px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+        <div class="footer-logo" onclick="showPage('landing');window.scrollTo(0,0)">
+        <img src="podlogo.png" style="width:26px;height:26px;object-fit:contain;" />
+        <span style="font-weight:800;font-size:16px;">Pod</span>
+        </div>
+        <p class="footer-copy">© 2026 Pod (Pakky Trip Planner)</p>
+        <ul class="footer-links">
+        <li><a onclick="showPage('privacy');window.scrollTo(0,0)">Privacy Policy</a></li>
+        <li><a onclick="showPage('about');window.scrollTo(0,0)" style="color:var(--pod-orange);">About</a></li>
+        </ul>
+    </footer>
+    </div><!-- /about -->
+    </body>
 </html>
