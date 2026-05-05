@@ -8,23 +8,25 @@ export default async function handler(req, res) {
     let pod = null;
         if (code) {
         try {
-            const r = await fetch(`${DB}/trips/${code}.json`, {
-            headers: { Accept: 'application/json' },
-            });
-            const text = await r.text(); // ← read as text first
-            console.log('Code received:', code);
-            console.log('Firebase status:', r.status);
-            console.log('Firebase raw response:', text.slice(0, 300));
-            
-            const data = JSON.parse(text);
-            console.log('Parsed data keys:', data ? Object.keys(data) : 'null');
-            console.log('Cover photo:', data?.coverPhoto);
-            
-            if (data && typeof data === 'object' && !data.error) {
+            const [nameRes, photoRes, countRes] = await Promise.all([
+            fetch(`${DB}/trips/${code}/name.json`, { headers: { Accept: 'application/json' } }),
+            fetch(`${DB}/trips/${code}/coverPhoto.json`, { headers: { Accept: 'application/json' } }),
+            fetch(`${DB}/trips/${code}/memberCount.json`, { headers: { Accept: 'application/json' } }),
+            ]);
+
+            const [name, coverPhoto, memberCount] = await Promise.all([
+            nameRes.json(),
+            photoRes.json(),
+            countRes.json(),
+            ]);
+
+            console.log('name:', name, 'coverPhoto:', coverPhoto, 'memberCount:', memberCount);
+
+            if (name && name !== 'null') {
             pod = {
-                name:        data.name || code,
-                coverPhoto:  data.coverPhoto || null,
-                memberCount: data.memberCount ?? Object.keys(data.members || {}).length,
+                name:        name || code,
+                coverPhoto:  coverPhoto || null,
+                memberCount: memberCount || 0,
             };
             }
         } catch (err) {
