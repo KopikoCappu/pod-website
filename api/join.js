@@ -27,8 +27,9 @@ export default async function handler(req, res) {
   const description = pod
     ? `${pod.memberCount} ${pod.memberCount === 1 ? 'person' : 'people'} already in · Plan anything, with anyone.`
     : 'Plan anything, with anyone.';
-  const ogImage     = pod?.coverPhoto || 'https://podplananything.com/og-default.png';
-  const appLink     = `podplananything://join/${code}`;
+    const rawCover = pod?.coverPhoto || null;
+    const isFirebaseUrl = rawCover?.includes('firebasestorage.googleapis.com');
+    const ogImage = isFirebaseUrl ? null : rawCover;  const appLink     = `podplananything://join/${code}`;
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -40,9 +41,11 @@ export default async function handler(req, res) {
   <!-- OG / iMessage / WhatsApp -->
   <meta property="og:title"       content="${title}" />
   <meta property="og:description" content="${description}" />
-  <meta property="og:image"       content="${ogImage}" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
+    ${ogImage ? `
+    <meta property="og:image" content="${ogImage}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    ` : ''}
   <meta property="og:url"         content="https://podplananything.com/join/${code}" />
   <meta property="og:site_name"   content="Pod" />
   <meta property="og:type"        content="website" />
