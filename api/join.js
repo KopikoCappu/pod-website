@@ -6,21 +6,31 @@ export default async function handler(req, res) {
     const appLink = `podplananything://join/${code}`;
 
     let pod = null;
-    if (code) {
-      try {
-        const r = await fetch(`${DB}/trips/${code}.json`, {
-          headers: { Accept: 'application/json' },
-        });
-        const data = await r.json();
-        if (data && typeof data === 'object' && !data.error) {
-          pod = {
-            name:        data.name || code,
-            coverPhoto:  data.coverPhoto || null,
-            memberCount: data.memberCount ?? Object.keys(data.members || {}).length,
-          };
+        if (code) {
+        try {
+            const r = await fetch(`${DB}/trips/${code}.json`, {
+            headers: { Accept: 'application/json' },
+            });
+            const text = await r.text(); // ← read as text first
+            console.log('Code received:', code);
+            console.log('Firebase status:', r.status);
+            console.log('Firebase raw response:', text.slice(0, 300));
+            
+            const data = JSON.parse(text);
+            console.log('Parsed data keys:', data ? Object.keys(data) : 'null');
+            console.log('Cover photo:', data?.coverPhoto);
+            
+            if (data && typeof data === 'object' && !data.error) {
+            pod = {
+                name:        data.name || code,
+                coverPhoto:  data.coverPhoto || null,
+                memberCount: data.memberCount ?? Object.keys(data.members || {}).length,
+            };
+            }
+        } catch (err) {
+            console.error('Firebase fetch error:', err.message);
         }
-      } catch (_) {}
-    }
+        }
 
     const title       = pod ? `Join ${pod.name} on Pod` : 'Join a Pod';
     const description = pod
