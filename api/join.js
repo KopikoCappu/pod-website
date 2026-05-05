@@ -29,8 +29,7 @@ export default async function handler(req, res) {
     : 'Plan anything, with anyone.';
     const rawCover = pod?.coverPhoto || null;
     const isFirebaseUrl = rawCover?.includes('firebasestorage.googleapis.com');
-    const ogImage = isFirebaseUrl ? null : rawCover;  const appLink     = `podplananything://join/${code}`;
-
+    const ogImage = pod?.coverPhoto || null;
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
