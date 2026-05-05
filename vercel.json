@@ -1,6 +1,7 @@
 {
+  "outputDirectory": ".",
   "rewrites": [
-    { "source": "/join/:code", "destination": "/api/join" }
+    { "source": "/join/:code", "destination": "/api/join?code=:code" }
   ],
   "headers": [
     {
