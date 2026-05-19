@@ -3,7 +3,7 @@ const DB = 'https://pakky-1f238-default-rtdb.firebaseio.com';
 export default async function handler(req, res) {
   try {
     const code = (req.query?.code || '').toUpperCase().trim();
-    const appLink = `podplananything://join/${code}`;
+    const appLink = `pod://join/${code}`;
 
     let pod = null;
         if (code) {
