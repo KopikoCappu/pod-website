@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pod — Plan Anything, With Anyone</title>
+  <title>Pod — Your Friend Group, Live</title>
+  <meta name="description" content="Pod is a live home base for your friend group. See where everyone is, share your schedule, plan together, and never lose the plan in a group chat again." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
@@ -196,7 +197,7 @@
       font-size: clamp(16px, 2vw, 20px);
       font-weight: 400;
       color: var(--pod-muted);
-      max-width: 480px;
+      max-width: 500px;
       line-height: 1.6;
       position: relative;
       z-index: 1;
@@ -671,7 +672,7 @@
       line-height: 1.6;
     }
 
-    /* ─── BETA SECTION ─── */
+    /* ─── BETA / DOWNLOAD SECTION ─── */
     .beta-section {
       padding: 120px 24px;
       max-width: 760px;
@@ -789,8 +790,8 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ─── PRIVACY PAGE ─── */
-    #privacy {
+    /* ─── PRIVACY / ABOUT / SUPPORT SHARED PAGE STYLES ─── */
+    #privacy, #support {
       padding-top: 100px;
       min-height: 100vh;
     }
@@ -967,6 +968,130 @@
     pointer-events: all; /* make it clickable */
     }
 
+    /* ─── SUPPORT PAGE: FAQ ─── */
+    .support-hero {
+      margin-bottom: 48px;
+    }
+
+    .support-search-note {
+      font-size: 15px;
+      color: var(--pod-muted);
+      line-height: 1.7;
+      margin-top: 8px;
+    }
+
+    .faq-group {
+      margin-bottom: 44px;
+    }
+
+    .faq-group-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pod-orange);
+      margin-bottom: 16px;
+    }
+
+    .faq-item {
+      background: var(--pod-dark-2);
+      border: 1px solid var(--pod-border);
+      border-radius: 14px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .faq-item:hover { border-color: rgba(255,79,0,0.18); }
+
+    .faq-question {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 22px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--pod-text);
+      user-select: none;
+    }
+
+    .faq-icon {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255,79,0,0.1);
+      border: 1px solid rgba(255,79,0,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--pod-orange);
+      transition: transform 0.25s;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      padding: 0 22px;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 400px;
+      padding: 0 22px 20px;
+    }
+
+    .faq-answer p {
+      font-size: 14px;
+      color: var(--pod-muted);
+      line-height: 1.75;
+    }
+
+    .support-quick-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 56px;
+    }
+
+    .support-quick-card {
+      background: var(--pod-dark-2);
+      border: 1px solid var(--pod-border);
+      border-radius: 16px;
+      padding: 22px;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .support-quick-card:hover {
+      border-color: rgba(255,79,0,0.25);
+      transform: translateY(-2px);
+    }
+
+    .support-quick-icon {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .support-quick-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .support-quick-desc {
+      font-size: 12px;
+      color: var(--pod-muted);
+      line-height: 1.5;
+    }
+
     /* ─── RESPONSIVE ─── */
     @media (max-width: 640px) {
       nav { padding: 16px 20px; }
@@ -1001,7 +1126,8 @@
       <li><a onclick="showPage('about'); window.scrollTo(0,0)">About</a></li>
 <li><a onclick="showPage('landing'); setTimeout(()=>document.getElementById('features-section').scrollIntoView({behavior:'smooth'}),50)">Features</a></li>
 <li><a onclick="showPage('landing'); setTimeout(()=>document.getElementById('how-section').scrollIntoView({behavior:'smooth'}),50)">How it works</a></li>
-      <li><a class="nav-cta" onclick="document.getElementById('beta-section').scrollIntoView({behavior:'smooth'})">Join Beta</a></li>
+<li><a onclick="showPage('support'); window.scrollTo(0,0)">Support</a></li>
+      <li><a class="nav-cta" onclick="document.getElementById('beta-section').scrollIntoView({behavior:'smooth'})">Get Pod</a></li>
     </ul>
   </nav>
 
@@ -1012,17 +1138,17 @@
     <section class="hero">
       <div class="hero-badge">
         <span class="badge-dot"></span>
-        Now in Beta — TestFlight
+        Now on the App Store
       </div>
       <h1 class="hero-headline">
-        Plan <span class="orange">anything.</span><br>With anyone.
+        Your friend group.<br><span class="orange">Live.</span>
       </h1>
       <p class="hero-sub">
-        Stop drowning in group chats just to figure out where to meet. Pod gets your whole crew on the same map — in real time.
+        Stop drowning in group chats just to figure out where everyone is. Pod is a live home base for your closest people, see who's around, share your schedule, and plan without the ten-text back-and-forth.
       </p>
       <div class="hero-actions">
         <button class="btn-primary" onclick="document.getElementById('beta-section').scrollIntoView({behavior:'smooth'})">
-          &nbsp;Get Early Access
+          &nbsp;Get Pod on iOS
         </button>
         <button class="btn-secondary" onclick="document.getElementById('how-section').scrollIntoView({behavior:'smooth'})">
           See how it works →
@@ -1103,18 +1229,28 @@
     <section id="features-section" class="features">
       <p class="section-label">What you get</p>
       <h2 class="section-title">Everything your<br>group actually needs</h2>
-      <p class="section-desc">No fluff, no 47-tab spreadsheets. Just the tools that get people from "where should we go?" to actually there.</p>
+      <p class="section-desc">Pod isn't just for one trip. It's the ongoing home base for the people you see the most, no fluff, no 47-tab spreadsheets.</p>
 
       <div class="features-grid">
         <div class="feature-card">
           <div class="feature-icon">📍</div>
           <h3 class="feature-title">Live Location Tracking</h3>
-          <p class="feature-desc">See your whole crew on one map in real time — even when the app is in the background. No more "where are you?" texts.</p>
+          <p class="feature-desc">See your whole pod on one map in real time, even when the app is in the background. No more "where are you?" texts.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🏠</div>
+          <h3 class="feature-title">Home Feed</h3>
+          <p class="feature-desc">One shared feed for everything happening in your pod, plans, updates, and check-ins, all in one place instead of scattered across texts.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🗓️</div>
+          <h3 class="feature-title">Schedules</h3>
+          <p class="feature-desc">Share your availability with your pod, or keep blocks private. See when your friends are actually free before you even ask.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🗺️</div>
-          <h3 class="feature-title">Pod Itineraries</h3>
-          <p class="feature-desc">Plan every stop, add notes, set times. Everyone sees the same plan so nobody shows up at the wrong spot.</p>
+          <h3 class="feature-title">Plan Together</h3>
+          <p class="feature-desc">Build itineraries as a group, add notes, set times. Everyone sees the same plan so nobody shows up at the wrong spot.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">✅</div>
@@ -1124,12 +1260,17 @@
         <div class="feature-card">
           <div class="feature-icon">🔔</div>
           <h3 class="feature-title">Smart Notifications</h3>
-          <p class="feature-desc">Get notified when someone joins, leaves, or the plan changes — without your phone blowing up all night.</p>
+          <p class="feature-desc">Get pinged when a pod member is nearby or the plan changes, without your phone blowing up all night.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📸</div>
+          <h3 class="feature-title">Memories</h3>
+          <p class="feature-desc">Look back on everything your pod has done together, a running record of the plans that actually happened.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">⌨️</div>
           <h3 class="feature-title">Instant Invite Codes</h3>
-          <p class="feature-desc">Share a code. Anyone joins, sees the plan, and shows up on the map.</p>
+          <p class="feature-desc">Share a code. Anyone joins your pod, sees the plan, and shows up on the map.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🗂️</div>
@@ -1149,38 +1290,38 @@
           <div class="step">
             <div class="step-num">🪐</div>
             <h3 class="step-title">Create a Pod</h3>
-            <p class="step-desc">Open the app, start a new pod, and grab your invite code in seconds.</p>
+            <p class="step-desc">Open the app, start a new pod with your friend group, and grab your invite code in seconds.</p>
           </div>
           <div class="step">
             <div class="step-num">📣</div>
             <h3 class="step-title">Invite your crew</h3>
-            <p class="step-desc">Share the code. Your friends join, appear on the map, and can RSVP immediately.</p>
+            <p class="step-desc">Share the code. Your friends join, appear on the map, and share their schedule right away.</p>
           </div>
           <div class="step">
             <div class="step-num">🚀</div>
-            <h3 class="step-title">Go. Together.</h3>
-            <p class="step-desc">Track each other live. See who's on the way, who's already there, who's running late — as usual.</p>
+            <h3 class="step-title">Live it, together</h3>
+            <p class="step-desc">See who's around, plan the next hangout, and look back on it all later in Memories.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- BETA CTA -->
+    <!-- DOWNLOAD CTA -->
     <div id="beta-section" style="padding: 100px 24px;">
       <div class="beta-section" style="padding:0; max-width:680px; margin:0 auto;">
         <div class="beta-card">
           <div class="hero-badge" style="margin-bottom:28px; display:inline-flex;">
             <span class="badge-dot"></span>
-            iOS Beta · TestFlight
+            Available on iOS
           </div>
           <h2 class="beta-headline">Be in the first pod.</h2>
-          <p class="beta-sub">Pod is live on iOS via TestFlight. Drop your email and I'll send you the link — takes 30 seconds to install and you're in.</p>
-          <div class="email-form">
-            <input class="email-input" type="email" id="email-input" placeholder="your@email.com" />
-            <button class="btn-primary" style="white-space:nowrap; font-size:15px;" onclick="handleSignup()">Get Access</button>
+          <p class="beta-sub">Pod is live on the App Store. Grab it, create a pod with your closest friends, and stop losing the plan in a group chat.</p>
+          <div class="hero-actions" style="margin-top:0;">
+            <a class="btn-primary" href="https://apps.apple.com/app/id6760986946" target="_blank" rel="noopener">
+              &nbsp;Download on the App Store
+            </a>
           </div>
-          <p class="beta-note">iOS only for now · Android coming soon</p>
-          <div class="success-msg" id="success-msg">🎉 You're on the list! Check your inbox soon.</div>
+          <p class="beta-note" style="margin-top:20px;">iOS only for now · Android coming later</p>
         </div>
       </div>
     </div>
@@ -1193,9 +1334,9 @@
       </div>
       <p class="footer-copy">© 2026 Pod. All rights reserved.</p>
       <ul class="footer-links">
+        <li><a onclick="showPage('support'); window.scrollTo(0,0)">Support</a></li>
         <li><a onclick="showPage('privacy'); window.scrollTo(0,0)">Privacy Policy</a></li>
-        <li><a onclick="showPage('about'); window.scrollTo(0,0)">About & Contact</a></li>   
-    
+        <li><a onclick="showPage('about'); window.scrollTo(0,0)">About & Contact</a></li>
     </ul>
     </footer>
 
@@ -1210,12 +1351,12 @@
 
       <p class="privacy-app">Pod</p>
       <h1 class="privacy-title">Privacy Policy</h1>
-      <p class="privacy-date">Last updated: March 23, 2026</p>
+      <p class="privacy-date">Last updated: July 13, 2026</p>
       <div class="privacy-divider"></div>
 
       <div class="privacy-section">
         <h2><span class="sec-num">01</span> Overview</h2>
-        <p>At Pod, we are committed to protecting your privacy. This policy outlines how we handle your data to provide a seamless group trip planning experience. By using the app, you consent to the practices described here.</p>
+        <p>At Pod, we are committed to protecting your privacy. This policy outlines how we handle your data to provide a live, real-time experience for you and your friend group. By using the app, you consent to the practices described here.</p>
       </div>
 
       <div class="privacy-section">
@@ -1225,7 +1366,7 @@
           <div class="privacy-data-accent" style="background:#4A9EFF;"></div>
           <div>
             <h3>Precise Location Data</h3>
-            <p>We collect GPS coordinates to enable real-time map features and group tracking. This includes Background Location access, allowing your pod members to see your progress even when the app is minimized.</p>
+            <p>We collect GPS coordinates to enable real-time map features and pod tracking. This includes Background Location access, allowing your pod members to see your location even when the app is minimized.</p>
           </div>
         </div>
 
@@ -1233,7 +1374,7 @@
           <div class="privacy-data-accent" style="background:#3DD68C;"></div>
           <div>
             <h3>Account Identifiers</h3>
-            <p>We use Firebase Authentication to collect your email address and name. This is required to sync your itineraries and identify you to your travel group.</p>
+            <p>We use Firebase Authentication to collect your email address and name. This is required to sync your pods and identify you to the friends in them.</p>
           </div>
         </div>
 
@@ -1241,14 +1382,14 @@
           <div class="privacy-data-accent" style="background:#A78BFA;"></div>
           <div>
             <h3>User Generated Content</h3>
-            <p>Destinations, notes, and favorite locations you save are stored in our Firebase Realtime Database to ensure all group members have the latest pod details.</p>
+            <p>Plans, schedules, notes, and favorite locations you save are stored in our Firebase Realtime Database to ensure all pod members have the latest details.</p>
           </div>
         </div>
       </div>
 
       <div class="privacy-section">
         <h2><span class="sec-num">03</span> Data Sharing</h2>
-        <p>Your data is private. We do not sell your personal information. Your precise location and pod updates are only shared with users you have explicitly authorized by joining a shared "Pod." We utilize Google Firebase for secure data infrastructure.</p>
+        <p>Your data is private. We do not sell your personal information. Your precise location, schedule, and pod updates are only shared with users you have explicitly authorized by joining a shared "Pod." You can block any user, which immediately stops all location and content sharing with them. We utilize Google Firebase for secure data infrastructure.</p>
       </div>
 
       <div class="privacy-section">
@@ -1270,16 +1411,188 @@
       </div>
       <p class="footer-copy">© 2026 Pod</p>
       <ul class="footer-links">
+        <li><a onclick="showPage('support'); window.scrollTo(0,0)">Support</a></li>
         <li><a onclick="showPage('privacy'); window.scrollTo(0,0)" style="color:var(--pod-orange);">Privacy Policy</a></li>
         <li><a href="mailto:minhtran60524@gmail.com">Contact</a></li>
       </ul>
     </footer>
   </div><!-- /privacy -->
 
+  <!-- ══════════════════════════════════════ SUPPORT PAGE ══════════════════════════════════════ -->
+  <div id="support" class="page">
+    <div class="privacy-inner">
+      <button class="privacy-back" onclick="showPage('landing'); window.scrollTo(0,0)">
+        ← Back to Pod
+      </button>
+
+      <div class="support-hero">
+        <p class="privacy-app">Pod</p>
+        <h1 class="privacy-title">Support</h1>
+        <p class="support-search-note">Answers to the most common questions about Pod. If you don't see what you need, email us directly and we'll get back to you.</p>
+      </div>
+
+      <div class="support-quick-grid">
+        <div class="support-quick-card" onclick="document.getElementById('faq-location').scrollIntoView({behavior:'smooth'})">
+          <div class="support-quick-icon">📍</div>
+          <div class="support-quick-title">Location & battery</div>
+          <div class="support-quick-desc">Background tracking, accuracy, battery use</div>
+        </div>
+        <div class="support-quick-card" onclick="document.getElementById('faq-pods').scrollIntoView({behavior:'smooth'})">
+          <div class="support-quick-icon">🪐</div>
+          <div class="support-quick-title">Pods & plans</div>
+          <div class="support-quick-desc">Creating pods, invites, schedules, RSVPs</div>
+        </div>
+        <div class="support-quick-card" onclick="document.getElementById('faq-account').scrollIntoView({behavior:'smooth'})">
+          <div class="support-quick-icon">🔒</div>
+          <div class="support-quick-title">Account & privacy</div>
+          <div class="support-quick-desc">Blocking, data, deleting your account</div>
+        </div>
+      </div>
+
+      <!-- LOCATION & BATTERY -->
+      <div class="faq-group" id="faq-location">
+        <p class="faq-group-label">Location & Battery</p>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Why does Pod need my location in the background?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Pod shows your pod members where you are in real time, similar to how a live location app works. Background location lets that stay accurate even when you're not actively looking at the app, so your friends can see you're on the way without you having to keep Pod open. You can turn this off any time in iOS Settings → Privacy & Security → Location Services → Pod.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Will Pod drain my battery?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Pod adjusts how often it updates your location based on how you're moving. When you're stationary, it checks in far less often; when you're actively traveling, it updates more frequently to keep the map accurate. This keeps battery impact low compared to apps that ping location at a fixed interval regardless of movement.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Can I hide my location from specific people?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Yes. You can block any user from your profile or a pod's member list. Blocking immediately stops all location and content sharing between you and that person in both directions.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PODS & PLANS -->
+      <div class="faq-group" id="faq-pods">
+        <p class="faq-group-label">Pods & Plans</p>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            What's a pod?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>A pod is a persistent group for your friends, not a one-off event. Once you create a pod, it stays as your shared home base: a live map, a shared feed, everyone's schedules, and a running history of everything you've planned together in Memories.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            How do I invite friends to my pod?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Open your pod and generate an invite code from the members screen. Share it however you'd normally send a link or code, anyone who enters it joins the pod immediately and appears on the shared map.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Can I keep my schedule private?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Yes. Schedule blocks can be marked public or private. Public blocks are visible to your pod so they know when you're free; private blocks stay visible only to you.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            My plan isn't saving, what's wrong?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>When adding a location to a plan, make sure you select an actual result from the address dropdown rather than typing free text and dismissing it. The correct location shows small gray text underneath it confirming a real place was selected before you save.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCOUNT & PRIVACY -->
+      <div class="faq-group" id="faq-account">
+        <p class="faq-group-label">Account & Privacy</p>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            How do I delete my account?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Go to Settings → Account → Delete Account inside the app. This permanently removes your profile, location history, and pod content from Pod's servers. This action can't be undone.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Who can see my information?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Only people in a pod with you can see your location, schedule, and plans within that pod. Pod does not sell your data. See the full <a href="#" onclick="showPage('privacy'); window.scrollTo(0,0); return false;" style="color:var(--pod-orange);">Privacy Policy</a> for details.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            Someone is bothering me in a pod, what do I do?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-answer">
+            <p>Block them directly from their profile or the pod's member list, this cuts off all sharing between you two immediately. If it's a safety concern, email us and include the pod name and the person's username so we can look into it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="privacy-contact">
+        <p>Still need help? We usually respond within a day or two.</p>
+        <a href="mailto:minhtran60524@gmail.com">minhtran60524@gmail.com</a>
+        <p style="margin-top:20px; font-size:12px; color: rgba(240,237,232,0.18);">© 2026 Pod</p>
+      </div>
+    </div>
+
+    <footer style="border-top: 1px solid var(--pod-border); padding: 32px 40px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+      <div class="footer-logo" onclick="showPage('landing'); window.scrollTo(0,0)">
+        <img src="podlogo.png" class="nav-logo-mark" style="width:34px;height:34px;object-fit:contain;background:white;border-radius:8px;padding:3px;" />
+        <span style="font-weight:800; font-size:16px;">Pod</span>
+      </div>
+      <p class="footer-copy">© 2026 Pod</p>
+      <ul class="footer-links">
+        <li><a onclick="showPage('support'); window.scrollTo(0,0)" style="color:var(--pod-orange);">Support</a></li>
+        <li><a onclick="showPage('privacy'); window.scrollTo(0,0)">Privacy Policy</a></li>
+        <li><a href="mailto:minhtran60524@gmail.com">Contact</a></li>
+      </ul>
+    </footer>
+  </div><!-- /support -->
+
   <script>
     function showPage(id) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(id).classList.add('active');
+    }
+
+    function toggleFaq(el) {
+      el.parentElement.classList.toggle('open');
     }
 
     // URL-based routing
@@ -1289,6 +1602,8 @@
         showPage('privacy'); window.scrollTo(0, 0);
     } else if (hash === '#/about' || hash === '#about') {
         showPage('about'); window.scrollTo(0, 0);
+    } else if (hash === '#/support' || hash === '#support') {
+        showPage('support'); window.scrollTo(0, 0);
     } else {
         showPage('landing');
     }
@@ -1302,32 +1617,6 @@
       window.location.hash = '#/privacy';
     }
 
-    // Beta signup (placeholder — wire to your backend / ConvertKit / etc.)
-    async function handleSignup() {
-        const email = document.getElementById('email-input').value;
-        if (!email || !email.includes('@')) {
-            document.getElementById('email-input').style.borderColor = 'rgba(255,79,0,0.6)';
-            return;
-        }
-
-        try {
-            const res = await fetch('/api/signup', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
-            });
-
-            if (res.ok) {
-            document.getElementById('success-msg').classList.add('show');
-            document.getElementById('email-input').value = '';
-            } else {
-            alert('Something went wrong, try again!');
-            }
-        } catch (err) {
-            console.error(err);
-            alert('Something went wrong, try again!');
-        }
-        }
     // Animate elements on scroll
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => {
@@ -1372,7 +1661,7 @@
         <div style="flex:1;min-width:240px;">
             <p class="privacy-app">The person behind Pod</p>
             <h1 class="privacy-title" style="font-size:40px;">Minh Tran</h1>
-            <p class="privacy-date">CS Sophomore · University of Florida</p>
+            <p class="privacy-date">CS Student · University of Florida</p>
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;">
             <span style="background:rgba(255,79,0,0.1);border:1px solid rgba(255,79,0,0.25);color:#FF7A3D;font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;letter-spacing:0.05em;">ML Research</span>
             <span style="background:rgba(255,79,0,0.1);border:1px solid rgba(255,79,0,0.25);color:#FF7A3D;font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px;letter-spacing:0.05em;">Automation Engineering</span>
@@ -1388,13 +1677,12 @@
         <h2><span class="sec-num">01</span> Why I built Pod</h2>
         <p style="margin-bottom:16px;">
           My friend group was (and is) genuinely crap at planning things. We'd try to organize something and Elijah would get mad, Jay wouldn't read the chat, Rafe + Luis would be dead asleep, Davis would be halfway across town, and who knows if Ali was even alive. Somehow I was still worse than all of them combined.
-            <!-- My friend group is genuinely crap at planning things. I'd try to organize something and I was just as bad as them. Elijah getting mad, Jay not reading the chat, Rafe + Luis not even awake yet, Davis across town, and who knows if Ali is even alive. -->
         </p>
         <p style="margin-bottom:16px;">
-            The real problem wasn't that they didn't want to come. It was that the plan lived in a wall of text nobody was going to scroll through. So I thought, what if the plan just looked like a plan? Stops in order, times visible, everyone on the same map.
+            The real problem wasn't that they didn't want to come. It was that the plan lived in a wall of text nobody was going to scroll through, and there was nowhere for the group to just exist between plans. So I thought, what if the group had a permanent home, not just a chat that resets to zero context every time?
         </p>
         <p>
-            That's Pod. No group chat archaeology. You open the app, you see where everyone is going and when, you RSVP, you show up. That's it.
+            That's Pod. You open the app, you see where everyone is, what they're up to, and what's coming up. No group chat archaeology. You show up.
         </p>
         </div>
 
@@ -1402,10 +1690,10 @@
         <div class="privacy-section">
         <h2><span class="sec-num">02</span> Background</h2>
         <p style="margin-bottom:16px;">
-            I'm a CS sophomore at the University of Florida. Outside of Pod, I do machine learning research and automation in epidemiology, and work on automation engineering at UF.
+            I'm a CS student at the University of Florida, graduating December 2026. Outside of Pod, I do machine learning research in genomics and automation engineering at UF.
         </p>
         <p>
-            Building Pod taught me more in a few months than I expected — Firebase security rules that silently fail at 2am, animated marker bugs that only show up with 4+ users, background location on iOS being its own beast entirely. The kind of stuff you only learn by shipping something real.
+            Building Pod taught me more than I expected — Firebase security rules that silently fail at 2am, animated marker bugs that only show up with 4+ users, background location on iOS being its own beast entirely. The kind of stuff you only learn by shipping something real.
         </p>
         </div>
 
@@ -1413,10 +1701,10 @@
         <div class="privacy-section">
         <h2><span class="sec-num">03</span> What I'm looking for</h2>
         <p style="margin-bottom:16px;">
-            Pod is in beta right now and I'm actively growing it, by the way if you're reading this and want to try it, the signup is on the homepage.
+            Pod is live on the App Store now, and I'm actively growing it, if you're reading this and want to try it, download it from the homepage.
         </p>
         <p style="margin-bottom:16px;">
-            I'm also looking for a summer 2026 SWE internship. The dream is somewhere like Anthropic or Google — places where the range of what you can work on is genuinely wide, where people care deeply about what they're building and why, and where you feel that in the culture. That kind of freedom to build things that matter is what I'm after.
+            I'm also looking for a summer 2026 SWE internship or co-op. The dream is somewhere like Anthropic or Google — places where the range of what you can work on is genuinely wide, where people care deeply about what they're building and why, and where you feel that in the culture. That kind of freedom to build things that matter is what I'm after.
         </p>
         <p>
             If that sounds like where you work, I'd love to talk.
@@ -1458,6 +1746,7 @@
         </div>
         <p class="footer-copy">© 2026 Pod</p>
         <ul class="footer-links">
+        <li><a onclick="showPage('support');window.scrollTo(0,0)">Support</a></li>
         <li><a onclick="showPage('privacy');window.scrollTo(0,0)">Privacy Policy</a></li>
         <li><a onclick="showPage('about');window.scrollTo(0,0)" style="color:var(--pod-orange);">About</a></li>
         </ul>
