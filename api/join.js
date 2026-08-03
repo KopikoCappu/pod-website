@@ -1,71 +1,196 @@
+import { GoogleAuth } from 'google-auth-library';
+
 const DB = 'https://pakky-1f238-default-rtdb.firebaseio.com';
+
+// ─── WHY THIS READS WITH CREDENTIALS ──────────────────────────────────────────
+// These fields used to be world-readable, so plain unauthenticated fetches
+// worked. The app's database.rules.json has since tightened trips/$code/name,
+// /coverPhoto and /memberCount to ".read": "auth != null" — closing the hole
+// where anyone with the database URL and a guessable pod code could read a
+// pod's name, cover and roster size.
+//
+// After that change every anonymous REST read here returned HTTP 401 with the
+// JSON BODY {"error":"Permission denied"}, and the old code called .json() on
+// it without checking res.ok. That parses to an OBJECT, which is truthy and is
+// not the string 'null', so it sailed through the `if (name && name !== 'null')`
+// guard and got interpolated straight into the meta tags — the "[object Object]"
+// invite card. og:image got it too, which is why the preview also lost its
+// picture. The link itself never broke, because the OG tags are cosmetic and
+// the universal-link association is driven by the AASA file, not by metadata.
+//
+// A service-account access token grants admin access to RTDB, bypassing rules
+// entirely — so this keeps working if the rules are tightened further.
+//
+// Deliberately google-auth-library rather than firebase-admin: the full Admin
+// SDK pulls in the @firebase/*-compat chain (and on v14 that chain has an
+// undeclared @firebase/app dependency that fails to resolve), which is a lot of
+// weight and a lot of failure surface for what is three field reads on a
+// mostly-static marketing site. This keeps the plain fetch calls below.
+//
+// Needs FIREBASE_SERVICE_ACCOUNT in the Vercel project: Firebase console →
+// Project settings → Service accounts → Generate new private key, pasted as a
+// single line of JSON.
+const SCOPES = [
+  'https://www.googleapis.com/auth/firebase.database',
+  'https://www.googleapis.com/auth/userinfo.email',
+];
+
+let authClient = null;
+
+// The library caches the token and refreshes it before expiry, so on a warm
+// lambda this costs nothing after the first call.
+const getAccessToken = async () => {
+  if (!process.env.FIREBASE_SERVICE_ACCOUNT) return null;
+  try {
+    if (!authClient) {
+      const auth = new GoogleAuth({
+        credentials: JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT),
+        scopes:      SCOPES,
+      });
+      authClient = await auth.getClient();
+    }
+    const { token } = await authClient.getAccessToken();
+    return token || null;
+  } catch (err) {
+    // A missing or malformed key must not take the page down — see the
+    // three-state render below.
+    console.error('[join] could not mint access token:', err.message);
+    authClient = null;
+    return null;
+  }
+};
+
+// ─── ESCAPING IS NOT OPTIONAL HERE ────────────────────────────────────────────
+// Everything interpolated below is attacker-controlled. `code` comes straight
+// off the query string (.toUpperCase() does not remove < or "), and pod names
+// are freely editable by any member from inside the app. Unescaped, a pod named
+// `"><script>…` is stored XSS delivered by a normal-looking invite link, and
+// /join/"><script>… is reflected XSS needing no pod at all.
+const esc = (v) =>
+  String(v)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+// Cover photos are Firebase Storage URLs. Anything that is not a plain https
+// link does not belong in an src= or an og:image.
+const safeUrl = (v) => {
+  if (typeof v !== 'string') return null;
+  try {
+    return new URL(v).protocol === 'https:' ? v : null;
+  } catch {
+    return null;
+  }
+};
 
 export default async function handler(req, res) {
   try {
-    const code = (req.query?.code || '').toUpperCase().trim();
+    // Pod codes are short alphanumerics. Constraining the shape here is what
+    // stops a crafted path from reaching the markup at all, and it also avoids
+    // a pointless database round-trip for obvious junk.
+    const raw  = (req.query?.code || '').toUpperCase().trim();
+    const code = /^[A-Z0-9]{2,16}$/.test(raw) ? raw : '';
+
     // Universal link — same domain as this page, so it works as both the
     // "open in app" trigger (intercepted by iOS via your AASA file) and
     // the plain-web fallback if the app isn't installed (just reloads this page).
-    const appLink = `https://podplananything.com/join/${code}`;
+    const appLink = `https://podplananything.com/join/${encodeURIComponent(code)}`;
 
-    let pod = null;
-        if (code) {
-        try {
-            const [nameRes, photoRes, countRes] = await Promise.all([
-            fetch(`${DB}/trips/${code}/name.json`, { headers: { Accept: 'application/json' } }),
-            fetch(`${DB}/trips/${code}/coverPhoto.json`, { headers: { Accept: 'application/json' } }),
-            fetch(`${DB}/trips/${code}/memberCount.json`, { headers: { Accept: 'application/json' } }),
-            ]);
+    // Three outcomes, not two. `pod` alone could not distinguish "this pod does
+    // not exist" from "we could not ask" — and rendering "Pod not found" when
+    // the lookup itself failed is a lie that sends a real invitee away.
+    let pod       = null;
+    let lookupOk  = false;
 
-            const [name, coverPhoto, memberCount] = await Promise.all([
-            nameRes.json(),
-            photoRes.json(),
-            countRes.json(),
-            ]);
+    if (code) {
+      try {
+        const token = await getAccessToken();
+        if (!token) throw new Error('no service-account token available');
 
-            console.log('name:', name, 'coverPhoto:', coverPhoto, 'memberCount:', memberCount);
+        const q    = `?access_token=${encodeURIComponent(token)}`;
+        const opts = { headers: { Accept: 'application/json' } };
 
-            if (name && name !== 'null') {
-            pod = {
-                name:        name || code,
-                coverPhoto:  coverPhoto || null,
-                memberCount: memberCount || 0,
-            };
-            }
-        } catch (err) {
-            console.error('Firebase fetch error:', err.message);
+        const [nameRes, photoRes, countRes] = await Promise.all([
+          fetch(`${DB}/trips/${code}/name.json${q}`,        opts),
+          fetch(`${DB}/trips/${code}/coverPhoto.json${q}`,  opts),
+          fetch(`${DB}/trips/${code}/memberCount.json${q}`, opts),
+        ]);
+
+        // ── CHECK res.ok BEFORE .json(). THIS LINE IS THE BUG FIX. ────────────
+        // RTDB answers a rejected read with HTTP 401 and a JSON *body* of
+        // {"error":"Permission denied"}. .json() parses that perfectly happily
+        // into an object, and every downstream check here was a truthiness
+        // check, which an object passes. Without this guard the error payload
+        // becomes the pod.
+        for (const r of [nameRes, photoRes, countRes]) {
+          if (!r.ok) throw new Error(`RTDB responded ${r.status}`);
         }
-        }
 
-    const title       = pod ? `Join ${pod.name} on Pod` : 'Join a Pod';
-    const description = pod
-      ? `${pod.memberCount} ${pod.memberCount === 1 ? 'person' : 'people'} already in · Plan anything, with anyone.`
-      : 'Plan anything, with anyone.';
+        const [name, coverPhoto, memberCount] = await Promise.all([
+          nameRes.json(),
+          photoRes.json(),
+          countRes.json(),
+        ]);
+
+        lookupOk = true;
+
+        // Check the TYPE, not truthiness — the second half of the same lesson.
+        if (typeof name === 'string' && name.trim()) {
+          pod = {
+            name:       name.trim(),
+            coverPhoto: safeUrl(coverPhoto),
+            // Legitimately absent on older pods — maintained by the onWrite
+            // Cloud Function, not written by clients. null means "make no
+            // claim", which reads better than "0 people already in".
+            memberCount:
+              typeof memberCount === 'number' && memberCount > 0 ? memberCount : null,
+          };
+        }
+      } catch (err) {
+        console.error('[join] firebase read failed:', err.message);
+        // lookupOk stays false → degraded card, buttons still work.
+      }
+    }
+
+    const title = pod ? `Join ${pod.name} on Pod` : 'Join a Pod';
+    const description =
+      pod && pod.memberCount
+        ? `${pod.memberCount} ${pod.memberCount === 1 ? 'person' : 'people'} already in · Plan anything, with anyone.`
+        : 'Plan anything, with anyone.';
     const ogImage = pod?.coverPhoto || null;
+
+    // Which card to draw:
+    //   no code            → "No pod code"
+    //   looked up, absent  → "Pod not found"
+    //   found              → full invite
+    //   could not look up  → full invite, minus the name/count/cover
+    const showNotFound = !code || (lookupOk && !pod);
 
     const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${title}</title>
+  <title>${esc(title)}</title>
 
-  <meta property="og:title"       content="${title}" />
-  <meta property="og:description" content="${description}" />
-  <meta property="og:url"         content="https://podplananything.com/join/${code}" />
+  <meta property="og:title"       content="${esc(title)}" />
+  <meta property="og:description" content="${esc(description)}" />
+  <meta property="og:url"         content="https://podplananything.com/join/${esc(code)}" />
   <meta property="og:site_name"   content="Pod" />
   <meta property="og:type"        content="website" />
   ${ogImage ? `
-  <meta property="og:image"        content="${ogImage}" />
+  <meta property="og:image"        content="${esc(ogImage)}" />
   <meta property="og:image:width"  content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:image"       content="${ogImage}" />
+  <meta name="twitter:image"       content="${esc(ogImage)}" />
   ` : `
   <meta name="twitter:card" content="summary" />
   `}
-  <meta name="twitter:title"       content="${title}" />
-  <meta name="twitter:description" content="${description}" />
+  <meta name="twitter:title"       content="${esc(title)}" />
+  <meta name="twitter:description" content="${esc(description)}" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -204,7 +329,7 @@ export default async function handler(req, res) {
 <div class="bg-glow"></div>
 <div class="bg-grid"></div>
 
-${!code || !pod ? `
+${showNotFound ? `
 <div class="card">
   <div class="not-found">
     <span class="not-found-icon">🌊</span>
@@ -216,20 +341,21 @@ ${!code || !pod ? `
 ` : `
 <div class="card">
   <div class="cover-wrap">
-    ${pod.coverPhoto
-      ? `<img class="cover" src="${pod.coverPhoto}" alt="${pod.name}" /><div class="cover-scrim"></div>`
+    ${pod?.coverPhoto
+      ? `<img class="cover" src="${esc(pod.coverPhoto)}" alt="${esc(pod.name)}" /><div class="cover-scrim"></div>`
       : `<div class="cover-fallback"><div class="cover-logo"><svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="18" r="10" fill="#FF4F00" opacity="0.9"/><circle cx="18" cy="18" r="16" stroke="#FF4F00" stroke-width="1.5" opacity="0.3"/><circle cx="18" cy="18" r="22" stroke="#FF4F00" stroke-width="1" opacity="0.12"/></svg></div></div>`
     }
   </div>
   <div class="body">
     <div class="badge"><span class="badge-dot"></span>You're invited</div>
-    <h1 class="pod-name">${pod.name}</h1>
+    <h1 class="pod-name">${pod ? esc(pod.name) : 'Join a Pod'}</h1>
     <div class="pod-meta">
+      ${pod?.memberCount ? `
       <span>${pod.memberCount} ${pod.memberCount === 1 ? 'member' : 'members'} inside</span>
-      <span class="meta-dot"></span>
-      <span>Pod · ${code}</span>
+      <span class="meta-dot"></span>` : ''}
+      <span>Pod · ${esc(code)}</span>
     </div>
-    <a href="${appLink}" class="btn-open" id="open-btn">
+    <a href="${esc(appLink)}" class="btn-open" id="open-btn">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
       </svg>
@@ -261,6 +387,23 @@ ${!code || !pod ? `
 
   } catch (err) {
     console.error('Join page error:', err);
-    res.status(500).json({ error: err.message });
+    // Never echo err.message to the client — this page is public and crawled,
+    // and the original bug was exactly a Firebase internal ("Permission denied")
+    // reaching the open web. Send a plain page that still gets a real invitee
+    // to the App Store.
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-store');
+    res.status(500).send(
+      `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" />` +
+      `<meta name="viewport" content="width=device-width, initial-scale=1.0" />` +
+      `<title>Join a Pod</title></head>` +
+      `<body style="font-family:system-ui;background:#0A0A0B;color:#F0EDE8;` +
+      `display:flex;flex-direction:column;align-items:center;justify-content:center;` +
+      `min-height:100dvh;margin:0;text-align:center;padding:24px">` +
+      `<h1 style="font-size:22px;margin:0 0 10px">Something went wrong</h1>` +
+      `<p style="opacity:0.5;font-size:14px;margin:0 0 24px">Try the link again in a moment.</p>` +
+      `<a href="https://apps.apple.com/app/id6760986946" style="color:#FF4F00;font-weight:700">` +
+      `Download Pod on the App Store</a></body></html>`
+    );
   }
 }

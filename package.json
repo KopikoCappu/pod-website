@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/KopikoCappu/pod-website/issues"
   },
-  "homepage": "https://github.com/KopikoCappu/pod-website#readme"
+  "homepage": "https://github.com/KopikoCappu/pod-website#readme",
+  "dependencies": {
+    "google-auth-library": "^11.0.0"
+  }
 }
