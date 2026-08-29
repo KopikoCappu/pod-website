@@ -261,260 +261,100 @@
       background: rgba(255,255,255,0.04);
     }
 
-    /* ─── PHONE MOCKUP ─── */
-    .phone-section {
-      padding: 40px 24px 120px;
-      display: flex;
-      justify-content: center;
+    /* ─── HERO (split: copy + real screenshot) ─── */
+    .hero-grid {
       position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 56px;
+      align-items: center;
     }
 
-    .phone-wrap {
-      position: relative;
-      animation: floatPhone 4s ease-in-out infinite;
+    .hero-copy { text-align: left; }
+    .hero-copy .hero-badge { margin-left: 0; }
+    .hero-copy .hero-headline { text-align: left; }
+    .hero-copy .hero-sub { margin-left: 0; max-width: 440px; }
+    .hero-copy .hero-actions { justify-content: flex-start; margin-left: 0; }
+
+    .hero-visual { position: relative; }
+
+    .hero-phone {
+      width: 100%;
+      max-width: 280px;
+      margin: 0 auto;
+      background: var(--pod-dark-3);
+      border-radius: 40px;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      box-shadow: 0 60px 100px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08);
+      animation: floatPhone 5s ease-in-out infinite;
     }
 
     @keyframes floatPhone {
       0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-12px); }
+      50% { transform: translateY(-10px); }
     }
 
-    .phone-glow {
-      position: absolute;
-      bottom: -60px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 300px;
-      height: 120px;
-      background: radial-gradient(ellipse, rgba(255,79,0,0.25) 0%, transparent 70%);
-      filter: blur(20px);
-    }
-
-    .phone-frame {
-      width: 280px;
-      background: var(--pod-dark-3);
-      border-radius: 44px;
-      border: 1.5px solid rgba(255,255,255,0.1);
-      overflow: hidden;
-      box-shadow:
-        0 80px 120px rgba(0,0,0,0.6),
-        0 0 0 1px rgba(255,255,255,0.04),
-        inset 0 1px 0 rgba(255,255,255,0.08);
-      position: relative;
-    }
-
-    .phone-notch {
+    .hero-phone-notch {
+      height: 24px;
       background: #0A0A0B;
-      height: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .phone-notch-bar {
-      width: 100px;
-      height: 6px;
-      background: #222;
+    .hero-phone-notch i {
+      width: 84px;
+      height: 5px;
       border-radius: 3px;
+      background: #222;
+      display: block;
     }
 
-    .phone-screen {
-      background: linear-gradient(160deg, #0f1118 0%, #0d1015 100%);
-      padding: 16px;
-      min-height: 480px;
-    }
-
-    /* Mini map */
-    .mini-map {
-      background: #141820;
-      border-radius: 16px;
-      height: 220px;
-      position: relative;
+    .hero-phone-screen {
+      aspect-ratio: 9 / 19.5;
       overflow: hidden;
-      margin-bottom: 14px;
+      background: #0d1015;
     }
 
-    .map-grid {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 28px 28px;
+    .hero-phone-screen img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
-    .map-road-h {
-      position: absolute;
-      height: 3px;
-      background: rgba(255,255,255,0.06);
-      border-radius: 2px;
-    }
-
-    .map-road-v {
-      position: absolute;
-      width: 3px;
-      background: rgba(255,255,255,0.06);
-      border-radius: 2px;
-    }
-
-    /* Avatar pins */
-    .map-pin {
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-    }
-
-    .map-pin-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 2px solid var(--pod-orange);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      background: var(--pod-dark-3);
-      box-shadow: 0 0 12px rgba(255,79,0,0.5);
-      animation: pinPulse 2.5s ease-in-out infinite;
-    }
-
-    .map-pin-avatar.blue { border-color: #4A9EFF; box-shadow: 0 0 12px rgba(74,158,255,0.5); }
-    .map-pin-avatar.green { border-color: #3DD68C; box-shadow: 0 0 12px rgba(61,214,140,0.5); animation-delay: 0.8s; }
-    .map-pin-avatar.purple { border-color: #A78BFA; box-shadow: 0 0 12px rgba(167,139,250,0.5); animation-delay: 1.5s; }
-
-    @keyframes pinPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-    }
-
-    .map-pin-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--pod-orange);
-    }
-
-    .map-pin.blue .map-pin-dot { background: #4A9EFF; }
-    .map-pin.green .map-pin-dot { background: #3DD68C; }
-    .map-pin.purple .map-pin-dot { background: #A78BFA; }
-
-    /* destination marker */
-    .map-dest {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    .map-dest-ring {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      border: 2px dashed rgba(255,79,0,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: spin 8s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .map-dest-inner {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255,79,0,0.2);
-      border: 2px solid var(--pod-orange);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      animation: spinReverse 8s linear infinite;
-    }
-
-    @keyframes spinReverse { to { transform: rotate(-360deg); } }
-
-    /* Trip card */
-    .trip-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 10px;
-    }
-
-    .trip-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .trip-card-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--pod-text);
-    }
-
-    .trip-card-badge {
-      font-size: 10px;
-      font-weight: 600;
-      color: #3DD68C;
-      background: rgba(61,214,140,0.12);
-      border: 1px solid rgba(61,214,140,0.25);
-      padding: 3px 8px;
-      border-radius: 20px;
-    }
-
-    .trip-card-meta {
-      font-size: 11px;
+    .hero-phone-caption {
+      margin-top: 18px;
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
       color: var(--pod-muted);
-      margin-bottom: 10px;
-      display: flex;
-      gap: 12px;
+      line-height: 1.6;
     }
 
-    .trip-card-avatars {
-      display: flex;
-      gap: -4px;
+    .hero-phone-caption b { color: var(--pod-orange-light); font-weight: 500; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-phone { animation: none; }
     }
 
-    .mini-avatar {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      border: 1.5px solid var(--pod-dark-3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      margin-left: -6px;
+    @media (max-width: 860px) {
+      .hero-grid { grid-template-columns: 1fr; text-align: center; }
+      .hero-copy, .hero-copy .hero-headline { text-align: center; }
+      .hero-copy .hero-sub { margin-left: auto; margin-right: auto; }
+      .hero-copy .hero-actions { justify-content: center; }
+      .hero-visual { order: -1; margin-bottom: 12px; }
     }
 
-    .mini-avatar:first-child { margin-left: 0; }
-
-    /* RSVP dots */
-    .rsvp-row {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .rsvp-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #3DD68C;
-    }
-
-    .rsvp-dot.pending { background: rgba(255,255,255,0.2); }
-
-    /* ─── FEATURES ─── */
-    .features {
-      padding: 100px 24px;
-      max-width: 1100px;
+    /* ─── PRODUCT WALKTHROUGH ─── */
+    .product-section {
+      padding: 110px 24px 40px;
+      max-width: 1080px;
       margin: 0 auto;
     }
 
@@ -543,64 +383,112 @@
       line-height: 1.65;
     }
 
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      margin-top: 60px;
-    }
-
-    .feature-card {
-      background: var(--pod-dark-2);
-      border: 1px solid var(--pod-border);
-      border-radius: 20px;
-      padding: 32px;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.3s, transform 0.3s;
-    }
-
-    .feature-card:hover {
-      border-color: rgba(255,79,0,0.25);
-      transform: translateY(-3px);
-    }
-
-    .feature-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,79,0,0.4), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .feature-card:hover::before { opacity: 1; }
-
-    .feature-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: rgba(255,79,0,0.1);
-      border: 1px solid rgba(255,79,0,0.2);
+    .walkthrough {
+      margin-top: 76px;
       display: flex;
+      flex-direction: column;
+      gap: 120px;
+    }
+
+    .walk-slide {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 64px;
       align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
     }
 
-    .feature-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 10px;
+    .walk-slide.in { opacity: 1; transform: translateY(0); }
+
+    .walk-slide.reverse { grid-template-columns: 1fr 280px; }
+    .walk-slide.reverse .walk-visual { order: 2; }
+    .walk-slide.reverse .walk-copy { order: 1; }
+
+    .walk-visual {
+      background: var(--pod-dark-3);
+      border-radius: 34px;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      box-shadow: 0 50px 90px rgba(0,0,0,0.5);
+      max-width: 280px;
+      margin: 0 auto;
     }
 
-    .feature-desc {
-      font-size: 14px;
+    .walk-visual img {
+      width: 100%;
+      aspect-ratio: 9 / 19.5;
+      object-fit: cover;
+      display: block;
+    }
+
+    .walk-copy .walk-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pod-orange);
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    .walk-copy h3 {
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+      line-height: 1.15;
+    }
+
+    .walk-copy p {
+      font-size: 16px;
       color: var(--pod-muted);
-      line-height: 1.65;
+      line-height: 1.7;
+      max-width: 38ch;
     }
+
+    @media (max-width: 760px) {
+      .walk-slide, .walk-slide.reverse {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .walk-slide.reverse .walk-visual,
+      .walk-slide.reverse .walk-copy { order: initial; }
+      .walk-copy p { margin-left: auto; margin-right: auto; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .walk-slide { opacity: 1; transform: none; transition: none; }
+    }
+
+    /* ─── AND THERE'S MORE (compact strip, not a card grid) ─── */
+    .more-strip {
+      margin-top: 100px;
+      padding-top: 52px;
+      border-top: 1px solid var(--pod-border);
+    }
+
+    .more-strip .section-label { margin-bottom: 28px; }
+
+    .more-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+    }
+
+    .more-item { display: flex; gap: 14px; align-items: flex-start; }
+
+    .more-item .glyph {
+      font-size: 18px;
+      line-height: 1;
+      margin-top: 2px;
+      color: var(--pod-orange);
+      flex-shrink: 0;
+    }
+
+    .more-item h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 4px; }
+    .more-item p { font-size: 13px; color: var(--pod-muted); line-height: 1.55; }
 
     /* ─── HOW IT WORKS ─── */
     .how-it-works {
@@ -672,71 +560,53 @@
       line-height: 1.6;
     }
 
-    /* ─── BETA / DOWNLOAD SECTION ─── */
-    .beta-section {
-      padding: 120px 24px;
-      max-width: 760px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .beta-card {
+    /* ─── DOWNLOAD CTA ─── */
+    .download-cta {
+      position: relative;
+      margin: 60px 24px 0;
+      border-radius: 32px;
+      overflow: hidden;
       background: var(--pod-dark-2);
       border: 1px solid var(--pod-border);
-      border-radius: 28px;
-      padding: 60px 48px;
-      position: relative;
-      overflow: hidden;
+      padding: 72px 32px;
+      text-align: center;
+      isolation: isolate;
     }
 
-    .beta-card::before {
+    .download-cta::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse at 50% 0%, rgba(255,79,0,0.08) 0%, transparent 60%);
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,79,0,0.14) 0%, transparent 60%);
       pointer-events: none;
     }
 
-    .beta-headline {
+    .download-cta-inner {
+      position: relative;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .download-cta-inner .hero-badge { margin: 0 auto 24px; }
+
+    .download-cta-inner h2 {
       font-size: clamp(30px, 4vw, 46px);
       font-weight: 900;
       letter-spacing: -0.03em;
       line-height: 1.1;
-      margin-bottom: 18px;
-      position: relative;
+      margin-bottom: 16px;
     }
 
-    .beta-sub {
+    .download-cta-inner p {
       font-size: 16px;
       color: var(--pod-muted);
       line-height: 1.65;
-      margin-bottom: 36px;
-      position: relative;
+      margin-bottom: 32px;
     }
 
-    .email-form {
-      display: flex;
-      gap: 10px;
-      max-width: 420px;
-      margin: 0 auto 20px;
-      position: relative;
+    @media (max-width: 640px) {
+      .download-cta { margin: 40px 12px 0; padding: 48px 24px; border-radius: 24px; }
     }
-
-    .email-input {
-      flex: 1;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--pod-border);
-      border-radius: 10px;
-      padding: 13px 16px;
-      font-size: 15px;
-      color: var(--pod-text);
-      font-family: 'Outfit', sans-serif;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .email-input::placeholder { color: var(--pod-muted-2); }
-    .email-input:focus { border-color: rgba(255,79,0,0.4); }
 
     .beta-note {
       font-size: 12px;
@@ -1096,22 +966,10 @@
     @media (max-width: 640px) {
       nav { padding: 16px 20px; }
       .nav-links { display: none; }
-      .features, .how-it-works .how-inner { padding-left: 20px; padding-right: 20px; }
-      .beta-card { padding: 40px 24px; }
+      .product-section, .how-it-works .how-inner { padding-left: 20px; padding-right: 20px; }
       footer { padding: 32px 20px; flex-direction: column; align-items: flex-start; }
       .steps::before { display: none; }
-      .email-form { flex-direction: column; }
     }
-
-    /* Success state */
-    .success-msg {
-      display: none;
-      color: #3DD68C;
-      font-size: 14px;
-      font-weight: 600;
-      margin-top: 12px;
-    }
-    .success-msg.show { display: block; }
   </style>
 </head>
 <body>
@@ -1124,7 +982,7 @@
     <span class="tooltip">Logo by <a href="https://www.linkedin.com/in/mirah-blanchard/" target="_blank" style="color:var(--pod-orange);text-decoration:none;">Mirah Blanchard</a></span>    </div>
     <ul class="nav-links">
       <li><a onclick="showPage('about'); window.scrollTo(0,0)">About</a></li>
-<li><a onclick="showPage('landing'); setTimeout(()=>document.getElementById('features-section').scrollIntoView({behavior:'smooth'}),50)">Features</a></li>
+<li><a onclick="showPage('landing'); setTimeout(()=>document.getElementById('product-section').scrollIntoView({behavior:'smooth'}),50)">Product</a></li>
 <li><a onclick="showPage('landing'); setTimeout(()=>document.getElementById('how-section').scrollIntoView({behavior:'smooth'}),50)">How it works</a></li>
 <li><a onclick="showPage('support'); window.scrollTo(0,0)">Support</a></li>
       <li><a class="nav-cta" onclick="document.getElementById('beta-section').scrollIntoView({behavior:'smooth'})">Get Pod</a></li>
@@ -1136,146 +994,99 @@
 
     <!-- HERO -->
     <section class="hero">
-      <div class="hero-badge">
-        <span class="badge-dot"></span>
-        Now on the App Store
-      </div>
-      <h1 class="hero-headline">
-        Your friend group.<br><span class="orange">Live.</span>
-      </h1>
-      <p class="hero-sub">
-        Stop drowning in group chats just to figure out where everyone is. Pod is a live home base for your closest people, see who's around, share your schedule, and plan without the ten-text back-and-forth.
-      </p>
-      <div class="hero-actions">
-        <button class="btn-primary" onclick="document.getElementById('beta-section').scrollIntoView({behavior:'smooth'})">
-          &nbsp;Get Pod on iOS
-        </button>
-        <button class="btn-secondary" onclick="document.getElementById('how-section').scrollIntoView({behavior:'smooth'})">
-          See how it works →
-        </button>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            Now on the App Store
+          </div>
+          <h1 class="hero-headline">
+            Your friend group.<br><span class="orange">Live.</span>
+          </h1>
+          <p class="hero-sub">
+            Stop drowning in group chats just to figure out where everyone is. Pod is where your closest people actually live, see who's around, share your schedule, and plan without the back-and-forth.
+          </p>
+          <div class="hero-actions">
+            <button class="btn-primary" onclick="document.getElementById('beta-section').scrollIntoView({behavior:'smooth'})">
+              &nbsp;Get Pod on iOS
+            </button>
+            <button class="btn-secondary" onclick="document.getElementById('product-section').scrollIntoView({behavior:'smooth'})">
+              See it in action →
+            </button>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-phone">
+            <div class="hero-phone-notch"><i></i></div>
+            <div class="hero-phone-screen">
+              <img src="assets/screens/screen-map.jpg" alt="Pod's live map, showing a pod's friends as photo pins across a map" />
+            </div>
+          </div>
+          <p class="hero-phone-caption"><b>01 — Live map.</b> Everyone's real location, not a last-seen guess.</p>
+        </div>
       </div>
     </section>
 
-    <!-- PHONE MOCKUP -->
-    <div class="phone-section">
-      <div class="phone-wrap">
-        <div class="phone-glow"></div>
-        <div class="phone-frame">
-          <div class="phone-notch"><div class="phone-notch-bar"></div></div>
-          <div class="phone-screen">
-            <!-- Mini map -->
-            <div class="mini-map">
-              <div class="map-grid"></div>
-              <!-- Roads -->
-              <div class="map-road-h" style="top:35%; left:0; right:0;"></div>
-              <div class="map-road-h" style="top:65%; left:0; right:0;"></div>
-              <div class="map-road-v" style="left:30%; top:0; bottom:0;"></div>
-              <div class="map-road-v" style="left:65%; top:0; bottom:0;"></div>
-              <!-- Destination -->
-              <div class="map-dest">
-                <div class="map-dest-ring">
-                  <div class="map-dest-inner">🍕</div>
-                </div>
-              </div>
-              <!-- Pins -->
-              <div class="map-pin" style="top:20%; left:15%;">
-                <div class="map-pin-avatar">😎</div>
-                <div class="map-pin-dot"></div>
-              </div>
-              <div class="map-pin blue" style="top:55%; left:60%;">
-                <div class="map-pin-avatar blue">🧢</div>
-                <div class="map-pin-dot"></div>
-              </div>
-              <div class="map-pin green" style="top:15%; left:70%;">
-                <div class="map-pin-avatar green">🎧</div>
-                <div class="map-pin-dot"></div>
-              </div>
-              <div class="map-pin purple" style="top:68%; left:20%;">
-                <div class="map-pin-avatar purple">🌸</div>
-                <div class="map-pin-dot"></div>
-              </div>
-            </div>
-            <!-- Trip card -->
-            <div class="trip-card">
-              <div class="trip-card-header">
-                <span class="trip-card-title">🍕 Friday Night Slice</span>
-                <span class="trip-card-badge">Live</span>
-              </div>
-              <div class="trip-card-meta">
-                <span>🗺️ Juniors's Pizza</span>
-                <span>🕗 7:30 PM</span>
-              </div>
-              <div style="display:flex;align-items:center;justify-content:space-between;">
-                <div class="trip-card-avatars">
-                  <div class="mini-avatar" style="background:#FF4F00;">😎</div>
-                  <div class="mini-avatar" style="background:#1A4A8A;">🧢</div>
-                  <div class="mini-avatar" style="background:#1A5C3A;">🎧</div>
-                  <div class="mini-avatar" style="background:#4A1A6A;">🌸</div>
-                </div>
-                <div class="rsvp-row">
-                  <div class="rsvp-dot"></div>
-                  <div class="rsvp-dot"></div>
-                  <div class="rsvp-dot"></div>
-                  <div class="rsvp-dot pending"></div>
-                </div>
-              </div>
-            </div>
+    <!-- PRODUCT WALKTHROUGH -->
+    <section id="product-section" class="product-section">
+      <p class="section-label">The actual app</p>
+      <h2 class="section-title">One home base.<br>Not seven group chats.</h2>
+      <p class="section-desc">Three more real screens, no filler. This is what you open Pod to every day.</p>
+
+      <div class="walkthrough">
+        <div class="walk-slide">
+          <div class="walk-visual">
+            <img src="assets/screens/screen-plan.jpg" alt="A pod's plan sheet listing upcoming stops with times and RSVPs" />
+          </div>
+          <div class="walk-copy">
+            <span class="walk-num">02 — The plan</span>
+            <h3>One plan, everyone sees it.</h3>
+            <p>Stops, times, who's in. No separate thread just to nail down logistics, and no showing up at the wrong spot.</p>
+          </div>
+        </div>
+
+        <div class="walk-slide reverse">
+          <div class="walk-visual">
+            <img src="assets/screens/screen-pods.jpg" alt="A grid of a user's pods, each with its own name and cover image" />
+          </div>
+          <div class="walk-copy">
+            <span class="walk-num">03 — Your pods</span>
+            <h3>Every group gets its own space.</h3>
+            <p>Not one giant chat for every friend group you've got. Each pod is its own place, with its own name and cover.</p>
+          </div>
+        </div>
+
+        <div class="walk-slide">
+          <div class="walk-visual">
+            <img src="assets/screens/screen-schedule.jpg" alt="A weekly schedule showing shared and private time blocks" />
+          </div>
+          <div class="walk-copy">
+            <span class="walk-num">04 — The schedule</span>
+            <h3>Know when people are actually free.</h3>
+            <p>Share your week or keep it private. Ask "are you free Friday?" a lot less.</p>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- FEATURES -->
-    <section id="features-section" class="features">
-      <p class="section-label">What you get</p>
-      <h2 class="section-title">Everything your<br>group actually needs</h2>
-      <p class="section-desc">Pod isn't just for one trip. It's the ongoing home base for the people you see the most, no fluff, no 47-tab spreadsheets.</p>
-
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">📍</div>
-          <h3 class="feature-title">Live Location Tracking</h3>
-          <p class="feature-desc">See your whole pod on one map in real time, even when the app is in the background. No more "where are you?" texts.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🏠</div>
-          <h3 class="feature-title">Home Feed</h3>
-          <p class="feature-desc">One shared feed for everything happening in your pod, plans, updates, and check-ins, all in one place instead of scattered across texts.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🗓️</div>
-          <h3 class="feature-title">Schedules</h3>
-          <p class="feature-desc">Share your availability with your pod, or keep blocks private. See when your friends are actually free before you even ask.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🗺️</div>
-          <h3 class="feature-title">Plan Together</h3>
-          <p class="feature-desc">Build itineraries as a group, add notes, set times. Everyone sees the same plan so nobody shows up at the wrong spot.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">✅</div>
-          <h3 class="feature-title">RSVP in One Tap</h3>
-          <p class="feature-desc">Drop a location, set a time, let everyone say in or out. Instant headcount. No back-and-forth.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔔</div>
-          <h3 class="feature-title">Smart Notifications</h3>
-          <p class="feature-desc">Get pinged when a pod member is nearby or the plan changes, without your phone blowing up all night.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📸</div>
-          <h3 class="feature-title">Memories</h3>
-          <p class="feature-desc">Look back on everything your pod has done together, a running record of the plans that actually happened.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">⌨️</div>
-          <h3 class="feature-title">Instant Invite Codes</h3>
-          <p class="feature-desc">Share a code. Anyone joins your pod, sees the plan, and shows up on the map.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🗂️</div>
-          <h3 class="feature-title">Saved Favorites</h3>
-          <p class="feature-desc">Bookmark your go-to spots so planning your next hangout takes seconds, not another group debate.</p>
+      <div class="more-strip">
+        <p class="section-label">And there's more</p>
+        <div class="more-list">
+          <div class="more-item">
+            <span class="glyph">✅</span>
+            <div><h4>RSVP in one tap</h4><p>Instant headcount, no back-and-forth.</p></div>
+          </div>
+          <div class="more-item">
+            <span class="glyph">📸</span>
+            <div><h4>Memories</h4><p>A running record of what your pod actually did.</p></div>
+          </div>
+          <div class="more-item">
+            <span class="glyph">⌨️</span>
+            <div><h4>Invite codes</h4><p>Share a code, anyone joins and shows up on the map.</p></div>
+          </div>
+          <div class="more-item">
+            <span class="glyph">🔔</span>
+            <div><h4>Smart notifications</h4><p>Pinged when it matters, not all night long.</p></div>
+          </div>
         </div>
       </div>
     </section>
@@ -1307,20 +1118,18 @@
     </section>
 
     <!-- DOWNLOAD CTA -->
-    <div id="beta-section" style="padding: 100px 24px;">
-      <div class="beta-section" style="padding:0; max-width:680px; margin:0 auto;">
-        <div class="beta-card">
-          <div class="hero-badge" style="margin-bottom:28px; display:inline-flex;">
+    <div id="beta-section" style="padding: 100px 24px 0;">
+      <div class="download-cta">
+        <div class="download-cta-inner">
+          <div class="hero-badge">
             <span class="badge-dot"></span>
             Available on iOS
           </div>
-          <h2 class="beta-headline">Be in the first pod.</h2>
-          <p class="beta-sub">Pod is live on the App Store. Grab it, create a pod with your closest friends, and stop losing the plan in a group chat.</p>
-          <div class="hero-actions" style="margin-top:0;">
-            <a class="btn-primary" href="https://apps.apple.com/app/id6760986946" target="_blank" rel="noopener">
-              &nbsp;Download on the App Store
-            </a>
-          </div>
+          <h2>Be in the first pod.</h2>
+          <p>Pod is live on the App Store. Grab it, start a pod with your closest people, and stop losing the plan in a group chat.</p>
+          <a class="btn-primary" href="https://apps.apple.com/app/id6760986946" target="_blank" rel="noopener">
+            &nbsp;Download on the App Store
+          </a>
           <p class="beta-note" style="margin-top:20px;">iOS only for now · Android coming later</p>
         </div>
       </div>
@@ -1627,12 +1436,24 @@
       });
     }, { threshold: 0.1 });
 
-    document.querySelectorAll('.feature-card, .step, .beta-card').forEach(el => {
+    document.querySelectorAll('.step, .more-item').forEach(el => {
       el.style.opacity = '0';
       el.style.transform = 'translateY(28px)';
       el.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
       observer.observe(el);
     });
+
+    // Product walkthrough: reveal each real screenshot as it scrolls into view
+    const walkObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          walkObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.25 });
+
+    document.querySelectorAll('.walk-slide').forEach(el => walkObserver.observe(el));
 
 
     
