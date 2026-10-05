@@ -971,6 +971,13 @@
       .steps::before { display: none; }
     }
   </style>
+  <!-- Vercel Web Analytics. Cookieless: page views, referrer, country, device
+       type. Needs Analytics enabled for this project in the Vercel dashboard,
+       otherwise /_vercel/insights/script.js 404s and nothing is recorded. -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 

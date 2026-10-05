@@ -521,6 +521,21 @@ export default async function handler(req, res) {
     }
     @media (max-width: 480px) { .body { padding: 22px 24px 28px; } .pod-name { font-size: 26px; } }
   </style>
+  <!-- Vercel Web Analytics, with the invite code scrubbed out of the URL.
+       A live code in the analytics dashboard is a working key to a pod for
+       anyone with dashboard access, so every invite page is recorded as
+       /join/[code]. The counts and referrers are what matter, not the code.
+       No backslashes in the regex: this sits inside a JS template literal,
+       which would eat them. -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    window.va('beforeSend', function (event) {
+      return Object.assign({}, event, {
+        url: event.url.replace(/[/]join[/][^/?#]+/, '/join/[code]'),
+      });
+    });
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
