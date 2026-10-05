@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import { GoogleAuth } from 'google-auth-library';
 
 const DB = 'https://pakky-1f238-default-rtdb.firebaseio.com';
@@ -85,6 +86,72 @@ const safeUrl = (v) => {
   }
 };
 
+// ─── THIS PAGE MUST NOT BE A FREE GUESSING ORACLE ─────────────────────────────
+// A live code renders the pod's name; a code that never existed renders "This
+// invite isn't valid". That difference is all a guesser needs, and until this
+// block existed the page answered it for anyone, from anywhere, as fast as they
+// could send requests, while the app's callables cap the same question at a
+// handful per hour. Since a code now admits instantly
+// (functions/src/invites.ts → redeemInvite), finding a live code here is a way
+// into a stranger's live location feed.
+//
+// So this page spends from the SAME per-IP invalid-code budget as the
+// callables: rateLimits/invalidByIp/{salted sha256 of IP}, with the same salt
+// and window. Sharing the bucket matters. Separate budgets would let a guesser
+// spend the app's allowance and then the website's.
+//
+// Once the budget is spent, every code (valid or not) renders the neutral
+// 'degraded' card, so a capped guesser learns nothing more.
+//
+// Keep these in step with functions/src/invites.ts.
+const INVALID_PER_IP       = 10;
+const INVALID_GLOBAL_ALARM = 300;
+const RATE_WINDOW_MS       = 60 * 60 * 1000;
+
+const ipKey = (req) => {
+  // Vercel sets x-real-ip / x-forwarded-for itself from the connecting client.
+  const fwd = String(req.headers?.['x-forwarded-for'] || '').split(',')[0].trim();
+  const ip  = String(req.headers?.['x-real-ip'] || '') || fwd || 'unknown';
+  const salt = process.env.INVITE_IP_SALT || 'pod-preview-invite';
+  return createHash('sha256').update(`${salt}:${ip}`).digest('hex').slice(0, 32);
+};
+
+const windowLive = (b, now) =>
+  b && typeof b.windowStart === 'number' && now - b.windowStart < RATE_WINDOW_MS;
+
+const ipBudgetSpent = async (q, key) => {
+  const r = await fetch(`${DB}/rateLimits/invalidByIp/${key}.json${q}`);
+  if (!r.ok) throw new Error(`RTDB responded ${r.status}`);
+  const b = await r.json();
+  return windowLive(b, Date.now()) && b.count >= INVALID_PER_IP;
+};
+
+// Read-then-write rather than a true transaction (REST has no cheap one). Two
+// simultaneous misses from one IP can count once instead of twice; a limiter
+// that is off by one under a race still caps a guesser at roughly the limit.
+const bumpBucket = async (q, path) => {
+  const r = await fetch(`${DB}/${path}.json${q}`);
+  if (!r.ok) throw new Error(`RTDB responded ${r.status}`);
+  const b   = await r.json();
+  const now = Date.now();
+  const next = windowLive(b, now)
+    ? { windowStart: b.windowStart, count: b.count + 1 }
+    : { windowStart: now, count: 1 };
+  const w = await fetch(`${DB}/${path}.json${q}`, { method: 'PUT', body: JSON.stringify(next) });
+  if (!w.ok) throw new Error(`RTDB responded ${w.status}`);
+  return next.count;
+};
+
+const recordInvalid = async (q, key) => {
+  const [globalCount] = await Promise.all([
+    bumpBucket(q, 'rateLimits/invalidGlobal/all'),
+    bumpBucket(q, `rateLimits/invalidByIp/${key}`),
+  ]);
+  if (globalCount === INVALID_GLOBAL_ALARM) {
+    console.error(`[join] INVITE_GUESSING_ALARM: ${INVALID_GLOBAL_ALARM} invalid codes within an hour (latest via website).`);
+  }
+};
+
 export default async function handler(req, res) {
   try {
     // Constraining the shape here is what stops a crafted path from reaching the
@@ -156,6 +223,13 @@ export default async function handler(req, res) {
         const q    = `?access_token=${encodeURIComponent(token)}`;
         const opts = { headers: { Accept: 'application/json' } };
 
+        const key = ipKey(req);
+        if (await ipBudgetSpent(q, key)) {
+          // Neutral card, no lookup. Thrown so it lands in the same branch as
+          // any other "couldn't load the details" outcome.
+          throw new Error('invalid-code budget spent for this IP');
+        }
+
         const inviteRes = await fetch(`${DB}/invites/${code}.json${q}`, opts);
 
         // ── CHECK res.ok BEFORE .json(). ──────────────────────────────────────
@@ -168,6 +242,7 @@ export default async function handler(req, res) {
 
         if (!invite || typeof invite !== 'object' || typeof invite.podCode !== 'string') {
           state = 'invalid';
+          await recordInvalid(q, key);
         } else if (
           invite.revoked === true ||
           !(typeof invite.expiresAt === 'number' && Date.now() < invite.expiresAt) ||
@@ -246,7 +321,11 @@ export default async function handler(req, res) {
       'invalid':  { icon: '🌊', title: "This invite isn't valid",
                     desc: 'It may have been revoked, or the link may have been cut short on its way to you.' },
       'stale':    { icon: '⏳', title: 'This invite has expired',
-                    desc: 'Invites last about ten minutes on purpose. Ask whoever sent it for a new one — it takes them a tap.' },
+                    // No duration named on purpose. The expiry is a server
+                    // constant that has already changed once (48 hours →
+                    // 10 minutes, functions/src/invites.ts) and this page has
+                    // no way to know which build minted the code in question.
+                    desc: 'Invites are short-lived on purpose. Ask whoever sent it for a new one — it takes them a tap.' },
       'degraded': { icon: '🐋', title: 'Join a Pod',
                     desc: "We couldn't load the details for this invite just now. The app can still open it." },
     }[state];
